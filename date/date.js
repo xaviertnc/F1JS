@@ -1,3 +1,12 @@
+/**
+ * F1JS - Date - 06 Oct 2022
+ *  
+ * @author  C. Moller <xavier.tnc@gmail.com>
+ * 
+ * @version 1.1.0 - 13 Nov 2022
+ *
+ */
+
 F1.Date = {  
 
 	days: {
@@ -18,7 +27,7 @@ F1.Date = {
   },
 
   formatYmd: function( date ) {
-    // console.log('Date::formatYmd(),', date );
+    console.log('Date::formatYmd(),', date );
     const yyyy = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate(),
     mm = m < 10 ? '0'+m : m, dd = d < 10 ? '0'+d : d;
     return `${yyyy}-${mm}-${dd}`;
@@ -40,6 +49,27 @@ F1.Date = {
   parseYmd: function( sqlDateStr ) {
     // console.log('Date::parseYmd(), sqlDateStr =', sqlDateStr );
     return sqlDateStr ? new Date( sqlDateStr ) : null;
+  },
+
+  prevDayYmd: function( ymdStr ) {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const curDate = this.parseYmd( ymdStr );
+    const prevDay = new Date( curDate.getTime() - oneDay );
+    // console.log('Date::prevDayYmd(), curDate =', curDate, ', prevDay =', prevDay );
+    return this.formatYmd( prevDay );
+  },
+
+  nextDayYmd: function( ymdStr ) {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const curDate = this.parseYmd( ymdStr );
+    const nextDay = new Date( curDate.getTime() + oneDay );
+    // console.log('Date::nextDayYmd(), curDate =', curDate, ', nextDay =', nextDay );
+    return this.formatYmd( nextDay );
+  },
+
+  ymd2dmy: function( ymdStr ) {
+    const dp = ymdStr.split('-');
+    return dp[2] + '-' + dp[1] + '-' + dp[0];
   },
 
 }
