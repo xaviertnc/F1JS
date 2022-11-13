@@ -1,11 +1,11 @@
 /* globals F1 */
 
 /**
- * F1 Form JS
+ * F1JS Form Class
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 10 Jul 2022
+ * @version 1.1.0 - 13 Nov 2022
  * 
  */
 
@@ -76,7 +76,7 @@ Form.FieldType.prototype = {
     return label || 'Field';
   },
 
-  getName: function() { return this.input.name; },
+  getName: function() { return this.elm.dataset.name || this.elm.id || this.input.name; },
   getValue: function() { const val = this.input.type === 'checkbox'
     ? ( this.input.checked ? this.input.value : '' ) : this.input.value;
     return val;
@@ -170,7 +170,7 @@ Form.prototype = {
     const elMsgs = document.createElement( 'div' );
     elMsgs.className = this.errorsClass + ' ' + this.summaryClass;
     elMsgs.innerHTML = errors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
-    this.elm.insertBefore( elMsgs, this.elm.firstElementChild.nextElementSibling );
+    this.elm.insertBefore( elMsgs, this.elm.firstElementChild );
   },
 
   clearErrors: function() { clearErrors( this, '.' + this.summaryClass );
@@ -184,8 +184,10 @@ Form.prototype = {
   reset: function() { this.clearErrors(); this.fields.forEach( field => field.reset() ); },
 
   init: function( initialValues, nameSpace ) {
+    console.log('Form:init(), initialValues =',initialValues, ', nameSpace =', nameSpace);
     this.fields.forEach( f => { const fname = f.getName(), fid = nameSpace
       ? fname.replace( `${nameSpace}[`, '' ).replace( ']', '' ) : fname;
+      console.log('Form:init() fname =', fname, ', fid =', fid);
       f.initialValue = initialValues ? initialValues[ fid ] || '' : f.getValue();
       if ( initialValues ) f.setValue( f.initialValue ); } );
   },

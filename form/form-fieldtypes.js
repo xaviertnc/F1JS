@@ -61,7 +61,7 @@ F1.Form.FieldTypes = {
 		afterInit: function() {
 			this.input.addEventListener('change', this.onChange.bind(this));
 			const elInput = document.createElement('input');
-			elInput.type = 'hidden'; elInput.name = this.input.name + '_ymd';
+			elInput.type = 'hidden'; elInput.name = this.input.name; this.input.name =  '_' + this.input.name;
 			this.hidden_input = elInput; this.elm.appendChild(elInput);
 			// console.log('Calendar::afterInit(), input.val =', this.input.value );
 			if (this.input.value) this.setValue( this.input.value );
@@ -74,10 +74,12 @@ F1.Form.FieldTypes = {
 		inputSelector: 'select',
 		getValue: function() { let val = this.inputs[0].value; if ( val === '' ) return val;
 	    if ( this.inputs[1].value ) val = val + ':' + this.inputs[1].value; return val; },
-	  setValue: function( val ) { if ( ! val ) { this.inputs[0].value = ''; 
+	  setValue: function( val ) { 
+	  	console.log('Time::setValue(), value =', val, this );
+	  	if ( ! val ) { this.inputs[0].value = ''; 
 	    this.inputs[1].value = ''; return; } const parts = val.split( ':' );
-	    if ( parts[0] ) { this.inputs[0].value = parts[0]; }
-	    this.inputs[1].value = parts[1]; }	    
+	    if ( parts[0] ) { this.inputs[0].value = ( parts[0].length < 2 ? '0' : '' ) + parts[0]; }
+	    if ( parts[1] ) { this.inputs[1].value = ( parts[1].length < 2 ? '0' : '' ) + parts[1]; } }   
 	} ),
 
 	Duration: new F1.Form.FieldType( 'Duration_Field', {
