@@ -1,3 +1,12 @@
+/**
+ * F1JS - Select Class - 07 Oct 2022
+ *  
+ * @author  C. Moller <xavier.tnc@gmail.com>
+ * 
+ * @version 1.0.0 - 07 Oct 2022
+ *
+ */
+
 ( function( window, document ) {
   const S_PREFIX = 'select';
   const S_LOCALES = { en: { SEARCH: 'Search...', NO_RESULT: '- no result -', PLACEHOLDER_SINGLE: '- Select -', PLACEHOLDER_MULTI: '- Select one or more -' } };
@@ -48,7 +57,7 @@
     toggle() { if (this.isOpen) this.close(); else if (!this.disabled) this.open(); }
     isSelected(key) { return this.options.find(o => o.key == key).selected; }
     selectOption(key) { if (!this.isSelected(key)) this.toggleSelect(key); }
-    selectOptions(csvStr) { const vals = csvStr.split(','), selected = []; this.options.forEach(o => vals.forEach(v => {
+    selectOptions(csvStr) { const vals = csvStr ? csvStr.split(',') : [], selected = []; this.options.forEach(o => vals.forEach(v => {
         if (o.value === v) { o.selected = true; selected.push(o) } else o.selected = false; })); return selected; }
     bindEvents() {
       window.addEventListener('mousedown', (e) => { if (!this.dom.el.contains(e.target)) this.close(); });
@@ -171,6 +180,7 @@
       } else this.printOptions(this.shown);
     }
     setValue(csvStr) {
+      console.log('setValue = ', csvStr, this);
       const selected = csvStr !== undefined ? this.selectOptions(csvStr) : this.options.filter(op => op.selected);
       this.printDisplay(selected); this.dom.hidden.value = selected.map(op => op.value).join(',');
       this.printOptions(this.options); this.dom.hidden.dispatchEvent(this.onChangeEvent);
