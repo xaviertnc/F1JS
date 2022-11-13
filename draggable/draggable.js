@@ -1,3 +1,13 @@
+/**
+ * F1JS - Draggable Class - 22 Mar 2022
+ *  
+ * @author  C. Moller <xavier.tnc@gmail.com>
+ * 
+ * @version 1.0.0 - 22 Mar 2022
+ *   - Probably not fully functional and needs further development...
+ *
+ */
+
 class Draggables {
 
 
