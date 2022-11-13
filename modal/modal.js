@@ -1,11 +1,11 @@
 /* globals F1 */
 
 /**
- * F1 Modal JS - Easy modal popups - 15 July 2022
+ * F1JS Modal - Simplify Modal Popups - 15 July 2022
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 15 July 2022
+ * @version 1.1.0 - 01 Oct 2022
  * 
  */
 
@@ -62,6 +62,7 @@ F1.Modal = {
 
     document.documentElement.classList.add('has-modal');
 
+    const elModalBase = elModal.parentElement;
     const elClose = elModal.querySelector( '.modal-close' );
     if ( elClose && ! elClose.MODAL ) elClose.MODAL = elModal;
 
@@ -76,26 +77,27 @@ F1.Modal = {
       if ( options.focus ) form.focus();
     }
 
-    if ( ! elModal.hasClickListener ) {
-      elModal.hasClickListener = true;
-      elModal.addEventListener( 'click',
+    if ( ! elModalBase.hasClickListener ) {
+      elModalBase.hasClickListener = true;
+      elModalBase.addEventListener( 'click',
         function( event ) {
-          if ( event.target === elModal ) {
-            elModal.classList.remove( 'open' );
+          if ( event.target === elModalBase ) {
+            elModalBase.classList.remove( 'open' );
             document.documentElement.classList.remove('has-modal');
           }
         }
       );
     }
 
-    elModal.classList.add( 'open' );
+    elModalBase.classList.add( 'open' );
   },
 
 
-  close: function ( elClose, event )
+  close: function ( elModal, event )
   {
-    event.preventDefault();
-    elClose.MODAL.classList.remove( 'open' );
+    if (event) event.preventDefault();
+    if (elModal.MODAL) elModal = elModal.MODAL;
+    elModal.parentElement.classList.remove( 'open' );
     document.documentElement.classList.remove('has-modal');
   }
 
