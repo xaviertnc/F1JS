@@ -14,11 +14,12 @@ F1.Modal = {
   makeDraggable: function( elModal )
   {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-      const elHeader = elModal.querySelector( 'header' );
+      const elModalInner = elModal.querySelector( '.modal-inner');
+      const elHeader = elModalInner.querySelector( 'header' );
       elHeader.addEventListener('mousedown', dragMouseDown);
 
-      function dragMouseDown(e) {
-        console.log('dragMouseDown');
+      function dragMouseDown( e ) {
+        console.log( 'dragMouseDown' );
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -29,24 +30,24 @@ F1.Modal = {
       }
 
       function closeDragElement() {
-        console.log('closeDragElement');
+        console.log( 'closeDragElement' );
         // stop moving when mouse button is released:
         document.removeEventListener( 'mouseup', closeDragElement );
         document.removeEventListener( 'mousemove', elementDrag );
       }
   
-      function elementDrag(e) {
+      function elementDrag( e ) {
         e = e || window.event;
         e.preventDefault();
-        console.log('elementDrag');
+        console.log( 'elementDrag' );
         // calculate the new cursor position:
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
         // set the element's new position:
-        elModal.style.top = (elModal.offsetTop - pos2) + "px";
-        elModal.style.left = (elModal.offsetLeft - pos1) + "px";
+        elModalInner.style.top = (elModalInner.offsetTop - pos2) + "px";
+        elModalInner.style.left = (elModalInner.offsetLeft - pos1) + "px";
       }
   },
 
@@ -60,10 +61,10 @@ F1.Modal = {
     
     if ( options.event ) event.preventDefault();
 
-    document.documentElement.classList.add('has-modal');
+    document.documentElement.classList.add( 'has-modal' );
 
-    const elModalBase = elModal.parentElement;
-    const elClose = elModal.querySelector( '.modal-close' );
+    const elModalInner = elModal.querySelector( '.modal-inner');
+    const elClose = elModalInner.querySelector( '.modal-close' );
     if ( elClose && ! elClose.MODAL ) elClose.MODAL = elModal;
 
     // NB: options.form === F1.Form instance
@@ -77,28 +78,28 @@ F1.Modal = {
       if ( options.focus ) form.focus();
     }
 
-    if ( ! elModalBase.hasClickListener ) {
-      elModalBase.hasClickListener = true;
-      elModalBase.addEventListener( 'click',
-        function( event ) {
-          if ( event.target === elModalBase ) {
-            elModalBase.classList.remove( 'open' );
-            document.documentElement.classList.remove('has-modal');
+    if ( ! elModal.hasClickListener ) {
+      elModal.hasClickListener = true;
+      elModal.addEventListener( 'click',
+        function( e ) {
+          if ( e.target === elModal ) {
+            elModal.classList.remove( 'open' );
+            document.documentElement.classList.remove( 'has-modal' );
           }
         }
       );
     }
 
-    elModalBase.classList.add( 'open' );
+    elModal.classList.add( 'open' );
   },
 
 
-  close: function ( elModal, event )
+  close: function ( el, e )
   {
-    if (event) event.preventDefault();
-    if (elModal.MODAL) elModal = elModal.MODAL;
-    elModal.parentElement.classList.remove( 'open' );
-    document.documentElement.classList.remove('has-modal');
+    if ( e ) e.preventDefault();
+    document.documentElement.classList.remove( 'has-modal' );
+    const elModal = el && el.MODAL ? el.MODAL : el;
+    elModal.classList.remove( 'open' );
   }
 
 };
