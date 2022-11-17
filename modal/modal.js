@@ -63,9 +63,14 @@ F1.Modal = {
 
     document.documentElement.classList.add( 'has-modal' );
 
-    const elModalInner = elModal.querySelector( '.modal-inner');
+    const elModalInner = elModal.querySelector( '.modal-inner' );
     const elClose = elModalInner.querySelector( '.modal-close' );
     if ( elClose && ! elClose.MODAL ) elClose.MODAL = elModal;
+
+    if ( options.content ) {
+      const elBody = elModalInner.querySelector( '.modal-body' );
+      if ( elBody ) elBody.innerHTML = options.content;
+    }
 
     // NB: options.form === F1.Form instance
     const form = options.form;
