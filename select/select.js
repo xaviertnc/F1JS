@@ -3,7 +3,8 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 07 Oct 2022
+ * @version 1.0.1 - FIX - 18 Nov 2022
+ *   - selectOptions: Force `csvStr` to string to prevent: `scvStr.split` is NOT a function!
  *
  */
 
@@ -57,7 +58,7 @@
     toggle() { if (this.isOpen) this.close(); else if (!this.disabled) this.open(); }
     isSelected(key) { return this.options.find(o => o.key == key).selected; }
     selectOption(key) { if (!this.isSelected(key)) this.toggleSelect(key); }
-    selectOptions(csvStr) { const vals = csvStr ? csvStr.split(',') : [], selected = []; this.options.forEach(o => vals.forEach(v => {
+    selectOptions(csvStr) { const vals = csvStr !== undefined ? csvStr.toString().split(',') : [], selected = []; this.options.forEach(o => vals.forEach(v => {
         if (o.value === v) { o.selected = true; selected.push(o) } else o.selected = false; })); return selected; }
     bindEvents() {
       window.addEventListener('mousedown', (e) => { if (!this.dom.el.contains(e.target)) this.close(); });
