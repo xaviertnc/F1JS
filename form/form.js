@@ -5,7 +5,11 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.1.0 - 13 Nov 2022
+ * @version 1.2.0 - FT - 18 Nov 2022
+ *   - Rearrange code
+ *   - Rename support classes like: Validator -> FieldValidator
+ *   - Add better support for Validators an ValidatorTypes
+ *   - Add `Required` ValidatorType by default.
  * 
  */
 
@@ -43,10 +47,6 @@ const Form = function( options )
 };
 
 
-Form.FieldTypes = {};
-Form.Validators = {};
-
-
 Form.Error = function( field, message )
 {
   this.field = field;
@@ -54,6 +54,35 @@ Form.Error = function( field, message )
 }
 
 Form.Error.prototype.focus = function() { this.field.focus(); }
+
+
+Form.FieldValidator = function( validatorType, field, args )
+{
+  this.type = validatorType.name;
+  this.model = validatorType;
+  this.field = field; this.args = args || [];
+};
+
+Form.FieldValidator.prototype = {
+  validate: function() { 
+    const valid = this.model.test( this.field, this.args );
+    if ( ! valid ) this.field.errors.push( new Form.Error( this.field,
+      this.model.getInvalidMessage( this.field, this.args ) ) );
+    return valid;
+  }
+};
+
+
+Form.ValidatorType = function( name, test, getInvalidMessage )
+{
+  this.name = name; 
+  this.test = test; // valid = test( field, args ); 
+  if ( getInvalidMessage ) { this.getInvalidMessage = getInvalidMessage; }
+};
+
+Form.ValidatorType.prototype = {
+  getInvalidMessage: function( field, args ) { return field.getLabel() + ' is invalid'; }
+};
 
 
 Form.FieldType = function( id, options )
@@ -84,6 +113,8 @@ Form.FieldType.prototype = {
   setValue: function( val ) { this.input.type === 'checkbox' ? this.input.checked = ( 
     this.input.value === val ) : this.input.value = val || ''; },
   getRequired: function() { return this.elm.classList.contains( 'required' ); },
+  getValidators: function() { if ( this.getRequired() ) this.validators.push( 
+    new Form.FieldValidator( Form.ValidatorTypes.Required, this ) ); },
   clearErrors: function() { clearErrors( this ) },
   clear: function() { this.setValue( '' ); },
   reset: function() { this.setValue( this.initialValue || '' ); },
@@ -100,11 +131,9 @@ Form.FieldType.prototype = {
   },
 
   validate: function( options ) {
-    const validator = Form.Validators.Required;
-    const valid = validator.test( this, options );
-    if ( ! valid ) this.errors.push( new Form.Error( this,
-      validator.getInvalidMessage( this, options ) ) );
-    return valid;
+    this.validators.forEach( validator => { 
+      if ( ! validator.validate() ) return false; });
+    return true;
   },
 
   inputSelector: 'input,textarea,select'
@@ -119,6 +148,7 @@ Form.Field = function( form, elm )
   this.form = form;
   this.inputs = [];
   this.errors = [];
+  this.validators = [];
   this.initialValue = '';
   this.inputSelector = 'input';
   this.errorsClass = form.errorsClass;
@@ -127,22 +157,8 @@ Form.Field = function( form, elm )
   const fieldType = Form.FieldTypes[ fieldTypeId ];
   extend( this, fieldType || new Form.FieldType( 'Text' ) );
   if (this.beforeInit) this.beforeInit();
-  this.getInputs(); this.input = this.inputs[0];
+  this.getInputs(); this.input = this.inputs[0]; this.getValidators();
   if (this.afterInit) this.afterInit();
-};
-
-
-Form.Validator = function( id, test, getInvalidMessage )
-{
-  this.id = id;
-  if ( test ) { this.test = test; }
-  if ( getInvalidMessage ) { this.getInvalidMessage = getInvalidMessage; }
-};
-
-
-Form.Validator.prototype = {
-  test: function( field, args ) { return true; },  
-  getInvalidMessage: function( field, args ) { return field.getLabel() + ' is invalid'; }
 };
 
 
@@ -185,14 +201,24 @@ Form.prototype = {
 
   init: function( initialValues, nameSpace ) {
     console.log('Form:init(), initialValues =',initialValues, ', nameSpace =', nameSpace);
+    this.clearErrors();
     this.fields.forEach( f => { const fname = f.getName(), fid = nameSpace
       ? fname.replace( `${nameSpace}[`, '' ).replace( ']', '' ) : fname;
       console.log('Form:init() fname =', fname, ', fid =', fid);
       f.initialValue = initialValues ? initialValues[ fid ] || '' : f.getValue();
       if ( initialValues ) f.setValue( f.initialValue ); } );
-  },
+  },  
 
 };
+
+
+Form.FieldTypes = {};
+
+Form.ValidatorTypes = { Required: new Form.ValidatorType( 'Required_Validator',
+  function( field ) { if ( ! field.getRequired() ) return true; else return field.getValue() !== ''; },
+  function( field ) { return field.getLabel() + ' is required.'; }
+) };
+
 
 window.F1.Form = Form;
 
