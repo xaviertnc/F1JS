@@ -12,4 +12,6 @@
 
 ## nextDayYmd( ymdStr )
 
+## ymd2long( ymdStr )
+
 ## ymd2dmy( ymdStr )

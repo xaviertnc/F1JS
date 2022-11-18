@@ -3,7 +3,8 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.1.0 - 13 Nov 2022
+ * @version 1.2.0 - 18 Nov 2022
+ *   - Add ymd2long()
  *
  */
 
@@ -65,6 +66,11 @@ F1.Date = {
     const nextDay = new Date( curDate.getTime() + oneDay );
     // console.log('Date::nextDayYmd(), curDate =', curDate, ', nextDay =', nextDay );
     return this.formatYmd( nextDay );
+  },
+
+  ymd2long: function( ymdStr ) {
+    const date = this.parseYmd( ymdStr );
+    return this.formatLong( date );
   },
 
   ymd2dmy: function( ymdStr ) {

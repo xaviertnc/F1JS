@@ -5,3 +5,7 @@
 
 ## 13 Nov 2022 - Ver 1.1.0
   - Add prevDayYmd(), nextDayYmd() and ymd2dmy()
+
+## 17 Nov 2022 - Ver 1.2.0
+  - Add ymd2long()
+  
