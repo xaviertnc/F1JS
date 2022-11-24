@@ -13,7 +13,30 @@
 
 ## Init
 
+	options = {
+		elm,
+		selector,
+		onlyShowSummary,
+		onlyShowGlobalErrors,
+	}
+
 	const bookingForm = new F1.Form({
 	  onlyShowSummary: true,
 	  selector: '#booking-edit-modal form'
 	});
+
+
+## Submit
+
+	F1.onSubmitBooking = function( event ) {
+		event.preventDefault();
+		if ( ! bookingFormCtrl.validate() )
+		{
+		  bookingFormCtrl.addGlobalError( 'Some field values are invalid.' );
+		  const fieldErrors = bookingFormCtrl.showErrors()
+		  log( 'onSubmitBooking, fieldErrors:', fieldErrors );
+		  return fieldErrors.pop().focus();
+		  // return fieldErrors[0].focus();
+		} 
+		saveBooking( elBookingEditModal.ENTITY );
+	};

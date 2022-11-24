@@ -5,11 +5,16 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.2.0 - FT - 18 Nov 2022
- *   - Rearrange code
- *   - Rename support classes like: Validator -> FieldValidator
- *   - Add better support for Validators an ValidatorTypes
- *   - Add `Required` ValidatorType by default.
+ * @version 1.3.0 - FT - 24 Nov 2022
+ *  - Add `onlyShowGlobalErrors` option.
+ *  - Add `Form.addGlobalError()` method.
+ *  - Add `name` property to `Calendar Field Controller`
+ *  - Remove `Required Validator` from the `Duration Field`. The `NOT Zero` check is enough...?
+ *  - Add new `elm` constructor option to allow using an existing HTMLElement instance reference.
+ *  - Fix bug in `Field.validate()` not returning the correct value when we have multiple validators.
+ *  - Improve `Form.validate()` to also return TRUE / FALSE depending on the overall valid status.
+ *  - Update `Form.showErrors()` to reflect the new GLOBAL ERRORS feature.
+ *  - Add `Form.errors` to allow showing GLOBAL errors not linked to a specific field.
  * 
  */
 
@@ -37,11 +42,12 @@ const Form = function( options )
     summaryClass: 'summary',
     unhappyClass: 'unhappy',
     errorsClass: 'errors',
+    errors: [],
     fields: []
   };
   extend ( this, defaults );
   extend( this, options );
-  this.elm = document.querySelector( this.selector || 'form' );
+  this.elm = options.elm || document.querySelector( this.selector );
   this.getFields();
   this.init( this.initialValues );
 };
@@ -64,10 +70,10 @@ Form.FieldValidator = function( validatorType, field, args )
 };
 
 Form.FieldValidator.prototype = {
-  validate: function() { 
-    const valid = this.model.test( this.field, this.args );
+  validate: function( options ) { 
+    const valid = this.model.test( this.field, this.args, options );
     if ( ! valid ) this.field.errors.push( new Form.Error( this.field,
-      this.model.getInvalidMessage( this.field, this.args ) ) );
+      this.model.getInvalidMessage( this.field, this.args, options ) ) );
     return valid;
   }
 };
@@ -123,17 +129,17 @@ Form.FieldType.prototype = {
   showErrors: function() {
     if ( !this.errors.length ) return;
     this.elm.classList.add( this.unhappyClass );
-    if ( this.form.onlyShowSummary ) return;
+    if ( this.form.onlyShowSummary || this.form.onlyShowGlobalErrors ) return;
     const elMsgs = document.createElement( 'div' );
     elMsgs.innerHTML = this.errors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
     elMsgs.className = this.errorsClass;
     this.elm.appendChild( elMsgs );
   },
 
-  validate: function( options ) {
+  validate: function( options ) { let valid = true;
     this.validators.forEach( validator => { 
-      if ( ! validator.validate() ) return false; });
-    return true;
+      if ( ! validator.validate( options ) ) valid = false; });
+    return valid;
   },
 
   inputSelector: 'input,textarea,select'
@@ -167,6 +173,9 @@ Form.prototype = {
   addField: function( elm ) {
     this.fields.push( new Form.Field( this, elm ) ); },
 
+  addGlobalError: function( errorMessage ) {
+    this.errors.push( new Form.Error( this, errorMessage ) ); },
+
   getFields: function() {
     const elements = this.elm.querySelectorAll( this.fieldSelector );
     elements.forEach( elm => this.addField( elm ) ); },
@@ -179,21 +188,26 @@ Form.prototype = {
   },
 
   showErrors: function() {
-    const errors = [];
+    fieldErrors = [];
     this.elm.classList.add( this.unhappyClass );
+    const showFieldErrorText = ! this.onlyShowGlobalErrors;
     this.fields.forEach( field => { field.showErrors(); 
-      if ( field.errors[0] ) errors.push( field.errors[0] ); } );
+      if ( showFieldErrorText && field.errors[0] ) fieldErrors.push( field.errors[0] ); } );
     const elMsgs = document.createElement( 'div' );
+    const allErrors = [].concat( fieldErrors, this.errors );
     elMsgs.className = this.errorsClass + ' ' + this.summaryClass;
-    elMsgs.innerHTML = errors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
+    elMsgs.innerHTML = allErrors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
     this.elm.insertBefore( elMsgs, this.elm.firstElementChild );
+    return fieldErrors;
   },
 
   clearErrors: function() { clearErrors( this, '.' + this.summaryClass );
     this.fields.forEach( field => field.clearErrors() ); },
 
-  validate: function( options ) { this.clearErrors();
-    this.fields.forEach( field => field.validate( options ) ); },
+  validate: function( options ) { let valid = true; this.clearErrors();
+    this.fields.forEach( field => { if ( ! field.validate( options ) ) valid = false; } );
+    return valid;
+  },
 
   focus: function() { this.fields[0].focus(); },
   clear: function() { this.clearErrors(); this.fields.forEach( field => field.clear() ); },
@@ -204,7 +218,7 @@ Form.prototype = {
     this.clearErrors();
     this.fields.forEach( f => { const fname = f.getName(), fid = nameSpace
       ? fname.replace( `${nameSpace}[`, '' ).replace( ']', '' ) : fname;
-      console.log('Form:init() fname =', fname, ', fid =', fid);
+      // console.log('Form:init() fname =', fname, ', fid =', fid);
       f.initialValue = initialValues ? initialValues[ fid ] || '' : f.getValue();
       if ( initialValues ) f.setValue( f.initialValue ); } );
   },  

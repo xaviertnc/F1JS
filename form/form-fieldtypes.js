@@ -65,6 +65,7 @@ if ( ! F1.controllers ) { F1.controllers = []; }
 			// console.log('Calendar::afterInit(), input.val =', this.input.value );
 			if (this.input.value) this.setValue( this.input.value );
 			// console.log('Calendar::afterInit(), input.val.after =', this.input.value );
+			this.controller.name = elInput.name;
 			this.controller.click(); 
 		},
 	} );
@@ -78,9 +79,8 @@ if ( ! F1.controllers ) { F1.controllers = []; }
 		formatValue: function(min) { return (min >= 60 ? Math.floor(min/60)+'h'+(min%60||'00') : min)+'min'; },
 		setDispValue: function(v) { this.input.nextElementSibling.innerText = this.formatValue(v); },
 		afterInit: function() { this.input.addEventListener('input', this.onChange.bind(this)); },
-    getValidators: function() { if ( this.getRequired() ) this.validators.push( 
-    new Form.FieldValidator( Form.ValidatorTypes.Required, this ) ); this.validators.push(
-    new Form.FieldValidator( Form.ValidatorTypes.GreaterThan, this, [0] ) ); },		
+    getValidators: function() { if ( this.getRequired() ) this.validators.push(
+    	new Form.FieldValidator( Form.ValidatorTypes.GreaterThan, this, [0] ) ); },		
 		onChange: function(ev) { this.setDispValue(ev.target.value); },
 	} );
 
