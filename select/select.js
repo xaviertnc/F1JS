@@ -3,8 +3,8 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.1 - FIX - 18 Nov 2022
- *   - selectOptions: Force `csvStr` to string to prevent: `scvStr.split` is NOT a function!
+ * @version 1.0.2 - UPD - 24 Nov 2022
+ *   - Comment out `console.log` line.
  *
  */
 
@@ -181,7 +181,7 @@
       } else this.printOptions(this.shown);
     }
     setValue(csvStr) {
-      console.log('setValue = ', csvStr, this);
+      // console.log('setValue = ', csvStr, this);
       const selected = csvStr !== undefined ? this.selectOptions(csvStr) : this.options.filter(op => op.selected);
       this.printDisplay(selected); this.dom.hidden.value = selected.map(op => op.value).join(',');
       this.printOptions(this.options); this.dom.hidden.dispatchEvent(this.onChangeEvent);
