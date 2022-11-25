@@ -14,6 +14,18 @@
 	bookingFormModalCtrl.show( { data: booking } );
 	dateNavCalModalCtrl.show();
 
+
+## Properties
+
+elm
+elBody
+elModalInner
+elHeader
+elClose
+elm.MODAL
+ENTITY
+
+
 ## Methods
 
 onClick( event )

@@ -5,10 +5,8 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.0 - 25 Nov 2022
- *   - TOTALLY refactor Modal JS from Static Object to Class Type Service.
- *   - Change content, reset, clear & focus option names.
- *   - Add this.elm.ENTITY + this.elm.MODAL
+ * @version 2.0.1 - FIX - 25 Nov 2022
+ *   - Move ENTITY prop from `elm` to `this`
  * 
  */
 
@@ -34,6 +32,7 @@ const Modal = function( options )
   this.elm = options.elm || document.querySelector( this.selector );
   this.elm.addEventListener( 'click', this.onClick );
   this.elm.MODAL = this;
+  this.ENTITY = null;
   this.elClose = this.elm.querySelector( '.modal-close' );
   if ( this.elClose ) this.elClose.addEventListener( 'click', this.onCloseClick );
   this.elModalInner = this.elm.querySelector( '.modal-inner' );
@@ -60,22 +59,20 @@ Modal.prototype = {
 
   close: function()
   {
+    console.log( 'Modal::close()' );
     document.documentElement.classList.remove( 'has-modal' );
     this.elm.classList.remove( 'open' );
-    this.elm.ENTITY = null;
+    this.ENTITY = null;
   },
 
   show: function( options )
   {
+    console.log( 'Modal::show(), options:', options, this );
     options = options || {};
-
     if ( options.event ) event.preventDefault();
-
     if ( options.body ) this.elBody.innerHTML = options.body;
-
     document.documentElement.classList.add( 'has-modal' );
     this.elm.classList.add( 'open' );
-
     if ( this.formController )
     {
       if ( options.data ) this.formController.init( options.data );  
@@ -84,8 +81,7 @@ Modal.prototype = {
 
       if ( this.focusFormOnShow ) this.formController.focus();
     }
-
-    this.elm.ENTITY = options.data;
+    this.ENTITY = options.data;
   },
 
   makeDraggable: function()

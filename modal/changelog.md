@@ -12,3 +12,6 @@
   - TOTALLY refactor Modal JS from Static Object to Class Type Service.
   - Change content, reset, clear & focus option names + Add `draggable`
   - Add this.elm.ENTITY + this.elm.MODAL
+
+## 25 Nov 2022 - FIX - Ver 2.0.1
+  - Move ENTITY prop from `elm` to `this` 
