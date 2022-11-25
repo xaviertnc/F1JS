@@ -8,3 +8,7 @@
  		* .modal-inner becomes .modal
  		* .modal becomes .modal-base
 
+## 25 Nov 2022 - Ver 2.0.0
+  - TOTALLY refactor Modal JS from Static Object to Class Type Service.
+  - Change content, reset, clear & focus option names + Add `draggable`
+  - Add this.elm.ENTITY + this.elm.MODAL

@@ -1,14 +1,23 @@
 # F1JS Modal - User Manual
 
-		F1.Modal.makeDraggable( elModal )
+	function initBookingViewModal() {
+	  return new F1.Modal( { elm: elBookingViewModal } );
+	}
 
-		F1.Modal.show( elModal, {
-			event: event,
-			form: F1JSFormInstance,
-			init: undefined,
-			reset: undefined,
-			clear: undefined
-		} )
+	function initBookingEditModal() {
+	  return new F1.Modal( { elm: elBookingEditModal,
+	    formController: bookingFormCtrl,
+	    focusFormOnShow: 1  } );
+	}
 
+	bookingViewModalCtrl.show( { data: booking, body: modalBodyHTML } );
+	bookingFormModalCtrl.show( { data: booking } );
+	dateNavCalModalCtrl.show();
 
-		modalObj = elModal.MODAL;
+## Methods
+
+onClick( event )
+onCloseClick( event )
+makeDraggable()
+show( options )
+close()
