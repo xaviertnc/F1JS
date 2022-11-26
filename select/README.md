@@ -1,6 +1,6 @@
 # F1JS Select - User Manual
 
-	var select = new Select( HTMLSelectElement )
+  var select = new Select( HTMLSelectElement )
 
       <p class="field required" data-type="Select">
         <label>Client</label>
@@ -14,4 +14,4 @@
           <option value="<?=$c->id?>" title="<?=$lbl?>"><?="{$c->name} - {$c->cell}"?></option>
           <?php endforeach; ?>
         </select>
-      </p>	
+      </p>  
