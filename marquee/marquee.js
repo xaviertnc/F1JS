@@ -3,13 +3,14 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 05 May 2022
+ * @version 2.0.0 - REL - 26 Nov 2022
+ *  - Convert to ES6 module
  * 
  * Note: Requires JQuery
  *
  */
 
-var Marquee = function(selector, options) {
+export const Marquee = function(selector, options) {
   var defaults = {
     autoStart: true,
     scrollStripSelector: '.marquee-items',
@@ -117,4 +118,4 @@ Marquee.prototype = {
     if (scrollWidth < frameWidth) { scrollWidth = this.addFillerContent(frameWidth, scrollWidth); }
     this.addAnimationSettings(frameWidth, scrollWidth); this.addOffScreenFrame(); this.bindEvents();
   }
-}
+};
