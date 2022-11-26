@@ -3,12 +3,13 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.2.0 - 18 Nov 2022
- *   - Add ymd2long()
+ * @version 2.0.0 - 26 Nov 2022
+ *   - Rename from Date to DateTime
+ *   - Convert to ES6 module
  *
  */
 
-F1.Date = {  
+export DateTime = {  
 
 	days: {
   	long: [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
@@ -78,4 +79,4 @@ F1.Date = {
     return dp[2] + '-' + dp[1] + '-' + dp[0];
   },
 
-}
+};
