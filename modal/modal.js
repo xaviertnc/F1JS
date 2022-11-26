@@ -1,23 +1,20 @@
-/* globals F1 */
-
 /**
  * F1JS Modal - Simplify Modal Popups - 15 July 2022
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.1 - FIX - 25 Nov 2022
- *   - Move ENTITY prop from `elm` to `this`
+ * @version 3.0.0 - REL - 26 Nov 2022
+ *   - Convert to ES6 module
+ *   - Remove F1 global dependancy
  * 
  */
-
-( function( window, document ) {
 
 
 function extend( obj, props ) { 
   for ( let key in props || {} ) { obj[ key ] = props[ key ]; } }
 
 
-const Modal = function( options )
+export const Modal = function( options )
 {
   const defaults = {
     selector: '.modal',
@@ -124,9 +121,4 @@ Modal.prototype = {
     this.elHeader.addEventListener( 'mousedown', dragMouseDown );
   }
 
-}; // end: Modal.prototype
-
-
-window.F1.Modal = Modal;
-
-}( window, document ) );
+};

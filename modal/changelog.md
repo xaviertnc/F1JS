@@ -5,8 +5,8 @@
 
 ## 01 Oct 2022 - Ver 1.1.0
   - Change class names...
- 		* .modal-inner becomes .modal
- 		* .modal becomes .modal-base
+    * .modal-inner becomes .modal
+    * .modal becomes .modal-base
 
 ## 25 Nov 2022 - Ver 2.0.0
   - TOTALLY refactor Modal JS from Static Object to Class Type Service.
@@ -15,3 +15,8 @@
 
 ## 25 Nov 2022 - FIX - Ver 2.0.1
   - Move ENTITY prop from `elm` to `this` 
+
+## 26 Nov 2022 - REL - Ver 3.0.0
+  - Convert to ES6 module
+  - Remove F1 global dependancy
+  - Fix white space issues
