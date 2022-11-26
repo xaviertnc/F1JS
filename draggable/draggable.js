@@ -3,12 +3,12 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 22 Mar 2022
- *   - Probably not fully functional and needs further development...
+ * @version 2.0.0 - 26 Nov 2022
+ *   - Convert to ES6 module
  *
  */
 
-class Draggables {
+export class Draggables {
 
 
   dragging = false
