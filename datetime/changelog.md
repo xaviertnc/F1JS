@@ -9,6 +9,6 @@
 ## 17 Nov 2022 - Ver 1.2.0
   - Add ymd2long()
 
-## 26 Nov 2022 - Ver 2.0.0
+## 26 Nov 2022 - REL - Ver 2.0.0
   - Rename from Date to DateTime!
   - Convert to ES6 module

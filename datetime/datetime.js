@@ -3,7 +3,7 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.0 - 26 Nov 2022
+ * @version 2.0.0 - REL - 26 Nov 2022
  *   - Rename from Date to DateTime
  *   - Convert to ES6 module
  *
@@ -11,14 +11,14 @@
 
 export DateTime = {  
 
-	days: {
-  	long: [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
-  	short: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
-	},
+  days: {
+    long: [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
+    short: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+  },
 
-	months: {
-  	long: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
-  	short: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
+  months: {
+    long: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+    short: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
   },
 
   formatLong: function( date ) {
