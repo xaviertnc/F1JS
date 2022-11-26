@@ -3,15 +3,14 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - 23 Sep 2022
+ * @version 2.0.0 - REL - 26 Nov 2022
+ *   - Convert to ES6 module
  * 
  * Note: Requires JQuery
  *
  */
 
-var F1 = window.F1 || {};
-(function (window, $, F1) {
-var Slideshow = function (selector, options) {
+export const Slideshow = function (selector, options) {
   var self = this, activeSlideIndex = 0, $el = $(selector);
   var defaults = { autoStart: false, showSlideDuration: 7000, transitionDuration: 900 };
   this.$el = $el; this.options = $.extend(defaults, options);
@@ -111,6 +110,3 @@ Slideshow.prototype.gotoNextSlide = function (direction) {
   }
   this.gotoSlide($nextSlide);
 };
-// end: Slideshow
-F1.Slideshow = Slideshow;
-}(window, jQuery, F1));
