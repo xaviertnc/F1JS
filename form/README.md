@@ -2,41 +2,41 @@
 
 ## Setup
 
-	const GreaterThan_Validator = new F1.Form.ValidatorType(
-		'GreaterThan_Validator',
-	  function( field, args ) { return field.getValue() > args[0]; },
-	  function( field, args ) { return field.getLabel() + ' must be greater than ' + args[0] + '.'; }
-	);
+  const GreaterThan_Validator = new F1.Form.ValidatorType(
+    'GreaterThan_Validator',
+    function( field, args ) { return field.getValue() > args[0]; },
+    function( field, args ) { return field.getLabel() + ' must be greater than ' + args[0] + '.'; }
+  );
 
-	F1.Form.ValidatorTypes.GreaterThan = GreaterThan_Validator;
+  F1.Form.ValidatorTypes.GreaterThan = GreaterThan_Validator;
 
 
 ## Init
 
-	options = {
-		elm,
-		selector,
-		onlyShowSummary,
-		onlyShowGlobalErrors,
-	}
+  options = {
+    elm,
+    selector,
+    onlyShowSummary,
+    onlyShowGlobalErrors,
+  }
 
-	const bookingForm = new F1.Form({
-	  onlyShowSummary: true,
-	  selector: '#booking-edit-modal form'
-	});
+  const bookingForm = new F1.Form({
+    onlyShowSummary: true,
+    selector: '#booking-edit-modal form'
+  });
 
 
 ## Submit
 
-	F1.onSubmitBooking = function( event ) {
-		event.preventDefault();
-		if ( ! bookingFormCtrl.validate() )
-		{
-		  bookingFormCtrl.addGlobalError( 'Some field values are invalid.' );
-		  const fieldErrors = bookingFormCtrl.showErrors()
-		  log( 'onSubmitBooking, fieldErrors:', fieldErrors );
-		  return fieldErrors.pop().focus();
-		  // return fieldErrors[0].focus();
-		} 
-		saveBooking( elBookingEditModal.ENTITY );
-	};
+  F1.onSubmitBooking = function( event ) {
+    event.preventDefault();
+    if ( ! bookingFormCtrl.validate() )
+    {
+      bookingFormCtrl.addGlobalError( 'Some field values are invalid.' );
+      const fieldErrors = bookingFormCtrl.showErrors()
+      log( 'onSubmitBooking, fieldErrors:', fieldErrors );
+      return fieldErrors.pop().focus();
+      // return fieldErrors[0].focus();
+    } 
+    saveBooking( elBookingEditModal.ENTITY );
+  };

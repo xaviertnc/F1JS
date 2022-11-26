@@ -27,3 +27,9 @@
   - Improve `Form.validate()` to also return TRUE / FALSE depending on the overall valid status.
   - Update `Form.showErrors()` to reflect the new GLOBAL ERRORS feature.
   - Add `Form.errors` to allow showing GLOBAL errors not linked to a specific field.
+
+# 26 Nov 2022 - REL - Ver 2.0.0
+  - Convert to ES6 module
+  - Remove F1 global dependancy
+  - Remove prettier.js (not relevant anymore)
+  - Fix white space issues.

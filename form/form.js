@@ -1,25 +1,13 @@
-/* globals F1 */
-
 /**
  * F1JS Form Class
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.3.0 - FT - 24 Nov 2022
- *  - Add `onlyShowGlobalErrors` option.
- *  - Add `Form.addGlobalError()` method.
- *  - Add `name` property to `Calendar Field Controller`
- *  - Remove `Required Validator` from the `Duration Field`. The `NOT Zero` check is enough...?
- *  - Add new `elm` constructor option to allow using an existing HTMLElement instance reference.
- *  - Fix bug in `Field.validate()` not returning the correct value when we have multiple validators.
- *  - Improve `Form.validate()` to also return TRUE / FALSE depending on the overall valid status.
- *  - Update `Form.showErrors()` to reflect the new GLOBAL ERRORS feature.
- *  - Add `Form.errors` to allow showing GLOBAL errors not linked to a specific field.
+ * @version 2.0.0 - 26 Nov 2022
+ *  - Convert to ES6 module
+ *  - Remove F1 global dependancy
  * 
  */
-
-( function( window, document ) {
-
 
 function extend( obj, props ) { 
   for ( let key in props || {} ) { obj[ key ] = props[ key ]; } }
@@ -34,7 +22,7 @@ function clearErrors( frmObj, errorsSelector ) {
 }
 
 
-const Form = function( options )
+export const Form = function( options )
 {
   const defaults = {
     selector: 'form',
@@ -45,7 +33,7 @@ const Form = function( options )
     errors: [],
     fields: []
   };
-  extend ( this, defaults );
+  extend( this, defaults );
   extend( this, options );
   this.elm = options.elm || document.querySelector( this.selector );
   this.getFields();
@@ -232,8 +220,3 @@ Form.ValidatorTypes = { Required: new Form.ValidatorType( 'Required_Validator',
   function( field ) { if ( ! field.getRequired() ) return true; else return field.getValue() !== ''; },
   function( field ) { return field.getLabel() + ' is required.'; }
 ) };
-
-
-window.F1.Form = Form;
-
-}( window, document ) );
