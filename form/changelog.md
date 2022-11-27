@@ -33,3 +33,14 @@
   - Remove F1 global dependancy
   - Remove prettier.js (not relevant anymore)
   - Fix white space issues.
+
+# 27 Nov 2022 - FIX - Ver 2.0.1
+  - Fix ES6 module conversion issues
+  - Detach sub-classes from the main class
+  - Rename Error to FormError to prevent name clashes
+  - Export sub-classes indiviually
+  - Move FormError, FieldValidator and ValidatorType `prototype` 
+      methods into their constructors as props, just to keep
+      code lines down!
+  - Convert `form-fieldtypes.js` and `form-validatortypes.js`
+      to ES6 modules and remove their dependancy in F1.

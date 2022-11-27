@@ -1,11 +1,13 @@
 /**
- * F1JS Form Class
+ * F1JS Form Class - 10 Jul 2022
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.0 - 26 Nov 2022
- *  - Convert to ES6 module
- *  - Remove F1 global dependancy
+ * @version 2.0.1 - FIX - 27 Nov 2022
+ *  - Fix ES6 module conversion issues
+ *  - Detach sub-classes from the main class
+ *  - Rename Error to FormError to prevent name clashes
+ *  - Export sub-classes indiviually
  * 
  */
 
@@ -22,71 +24,45 @@ function clearErrors( frmObj, errorsSelector ) {
 }
 
 
-export const Form = function( options )
-{
-  const defaults = {
-    selector: 'form',
-    fieldSelector: '.field',
-    summaryClass: 'summary',
-    unhappyClass: 'unhappy',
-    errorsClass: 'errors',
-    errors: [],
-    fields: []
-  };
-  extend( this, defaults );
-  extend( this, options );
-  this.elm = options.elm || document.querySelector( this.selector );
-  this.getFields();
-  this.init( this.initialValues );
-};
-
-
-Form.Error = function( field, message )
+export const FormError = function( field, message )
 {
   this.field = field;
   this.message = message;
+  this.focus = function() { this.field.focus(); };
 }
 
-Form.Error.prototype.focus = function() { this.field.focus(); }
 
-
-Form.FieldValidator = function( validatorType, field, args )
+export const FieldValidator = function( validatorType, field, args )
 {
   this.type = validatorType.name;
   this.model = validatorType;
   this.field = field; this.args = args || [];
-};
-
-Form.FieldValidator.prototype = {
-  validate: function( options ) { 
+  this.validate = function( options ) { 
     const valid = this.model.test( this.field, this.args, options );
-    if ( ! valid ) this.field.errors.push( new Form.Error( this.field,
+    if ( ! valid ) this.field.errors.push( new FormError( this.field,
       this.model.getInvalidMessage( this.field, this.args, options ) ) );
     return valid;
-  }
+  };
 };
 
 
-Form.ValidatorType = function( name, test, getInvalidMessage )
+export const ValidatorType = function( name, test, getInvalidMessage )
 {
   this.name = name; 
   this.test = test; // valid = test( field, args ); 
-  if ( getInvalidMessage ) { this.getInvalidMessage = getInvalidMessage; }
-};
-
-Form.ValidatorType.prototype = {
-  getInvalidMessage: function( field, args ) { return field.getLabel() + ' is invalid'; }
+  this.getInvalidMessage = getInvalidMessage || function( field, args ) { 
+    return field.getLabel() + ' is invalid'; };
 };
 
 
-Form.FieldType = function( id, options )
+export const FieldType = function( id, options )
 {
   this.type = id;
   extend( this, options );
 };
 
 
-Form.FieldType.prototype = {
+FieldType.prototype = {
 
   getInputs: function() { const field = this;
     const elements = this.elm.querySelectorAll( this.inputSelector );
@@ -108,7 +84,7 @@ Form.FieldType.prototype = {
     this.input.value === val ) : this.input.value = val || ''; },
   getRequired: function() { return this.elm.classList.contains( 'required' ); },
   getValidators: function() { if ( this.getRequired() ) this.validators.push( 
-    new Form.FieldValidator( Form.ValidatorTypes.Required, this ) ); },
+    new FieldValidator( this.form.validatorTypes.Required, this ) ); },
   clearErrors: function() { clearErrors( this ) },
   clear: function() { this.setValue( '' ); },
   reset: function() { this.setValue( this.initialValue || '' ); },
@@ -135,7 +111,7 @@ Form.FieldType.prototype = {
 };
 
 
-Form.Field = function( form, elm )
+export const Field = function( form, elm )
 {
   this.elm = elm;
   this.type = '';
@@ -143,26 +119,52 @@ Form.Field = function( form, elm )
   this.inputs = [];
   this.errors = [];
   this.validators = [];
+  this.controller = {};
   this.initialValue = '';
   this.inputSelector = 'input';
   this.errorsClass = form.errorsClass;
   this.unhappyClass = form.unhappyClass;
   const fieldTypeId = elm.getAttribute( 'data-type' );
-  const fieldType = Form.FieldTypes[ fieldTypeId ];
-  extend( this, fieldType || new Form.FieldType( 'Text' ) );
+  const fieldType = form.fieldTypes[ fieldTypeId ];
+  extend( this, fieldType || new FieldType( 'Text' ) );
   if (this.beforeInit) this.beforeInit();
   this.getInputs(); this.input = this.inputs[0]; this.getValidators();
   if (this.afterInit) this.afterInit();
 };
 
 
+export const Form = function( options, fieldTypes, validatorTypes )
+{
+  const vtRequired = new ValidatorType( 'Required_Validator',
+    function( field ) { if ( ! field.getRequired() ) return true; else return field.getValue() !== ''; },
+    function( field ) { return field.getLabel() + ' is required.'; } );
+  const defaults = {
+    selector: 'form',
+    fieldSelector: '.field',
+    summaryClass: 'summary',
+    unhappyClass: 'unhappy',
+    errorsClass: 'errors',
+    validatorTypes: { Required: vtRequired },
+    fieldTypes: {},
+    errors: [],
+    fields: []
+  };
+  extend( this, defaults );
+  extend( this, options );
+  if ( fieldTypes ) extend( this.fieldTypes, fieldTypes );
+  if ( validatorTypes ) extend( this.validatorTypes, validatorTypes );
+  this.elm = options.elm || document.querySelector( this.selector );
+  this.getFields();
+  this.init( this.initialValues );
+};
+
 Form.prototype = {
 
   addField: function( elm ) {
-    this.fields.push( new Form.Field( this, elm ) ); },
+    this.fields.push( new Field( this, elm ) ); },
 
   addGlobalError: function( errorMessage ) {
-    this.errors.push( new Form.Error( this, errorMessage ) ); },
+    this.errors.push( new FormError( this, errorMessage ) ); },
 
   getFields: function() {
     const elements = this.elm.querySelectorAll( this.fieldSelector );
@@ -212,11 +214,3 @@ Form.prototype = {
   },  
 
 };
-
-
-Form.FieldTypes = {};
-
-Form.ValidatorTypes = { Required: new Form.ValidatorType( 'Required_Validator',
-  function( field ) { if ( ! field.getRequired() ) return true; else return field.getValue() !== ''; },
-  function( field ) { return field.getLabel() + ' is required.'; }
-) };
