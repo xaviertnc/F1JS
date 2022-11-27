@@ -10,10 +10,4 @@
  * 
  */
 
-window.F1 = { DEBUG: 0, deferred [], locale: {} };
-
-
-document.addEventListener( 'DOMContentLoaded', () => {
-  F1.deferred.forEach( fn => fn() ); 
-  if ( F1.DEBUG ) console.log( 'F1', F1 );
-} );
+window.F1 = { DEBUG: 0, deferred: [], data: {}, components: {}, controllers: {}, locale: {} };
