@@ -178,7 +178,7 @@ Form.prototype = {
   },
 
   showErrors: function() {
-    fieldErrors = [];
+    const fieldErrors = [];
     this.elm.classList.add( this.unhappyClass );
     const showFieldErrorText = ! this.onlyShowGlobalErrors;
     this.fields.forEach( field => { field.showErrors(); 
