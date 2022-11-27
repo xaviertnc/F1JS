@@ -12,3 +12,6 @@
 ## 26 Nov 2022 - REL - Ver 2.0.0
   - Rename from Date to DateTime!
   - Convert to ES6 module
+
+## 27 Nov 2022 - REL - Ver 3.00
+  - Convert from static object to ES6 Class!
