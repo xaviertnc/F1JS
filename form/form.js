@@ -3,11 +3,11 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.1 - FIX - 27 Nov 2022
- *  - Fix ES6 module conversion issues
- *  - Detach sub-classes from the main class
- *  - Rename Error to FormError to prevent name clashes
- *  - Export sub-classes indiviually
+ * @version 2.1.0 - DEV - 15 Dec 2022
+ *  - Improve the FieldValidator class. Changed
+ *    from `Array args` to `Object args`!
+ *  - Improve the built-in `Required validation` 
+ *    to accept a 'zeroIsBad' option.
  * 
  */
 
@@ -36,7 +36,7 @@ export const FieldValidator = function( validatorType, field, args )
 {
   this.type = validatorType.name;
   this.model = validatorType;
-  this.field = field; this.args = args || [];
+  this.field = field; this.args = args || {};
   this.validate = function( options ) { 
     const valid = this.model.test( this.field, this.args, options );
     if ( ! valid ) this.field.errors.push( new FormError( this.field,
@@ -83,7 +83,7 @@ FieldType.prototype = {
   setValue: function( val ) { this.input.type === 'checkbox' ? this.input.checked = ( 
     this.input.value === val ) : this.input.value = val || ''; },
   getRequired: function() { return this.elm.classList.contains( 'required' ); },
-  getValidators: function() { if ( this.getRequired() ) this.validators.push( 
+  getValidators: function() { this.validators.push( 
     new FieldValidator( this.form.validatorTypes.Required, this ) ); },
   clearErrors: function() { clearErrors( this ) },
   clear: function() { this.setValue( '' ); },
@@ -136,7 +136,11 @@ export const Field = function( form, elm )
 export const Form = function( options, fieldTypes, validatorTypes )
 {
   const vtRequired = new ValidatorType( 'Required_Validator',
-    function( field ) { if ( ! field.getRequired() ) return true; else return field.getValue() !== ''; },
+    function( field, args /*, options */ ) {
+      if ( ! field.getRequired() ) return true;
+      const fieldValue = field.getValue();
+      if ( args && args.zeroIsBad && fieldValue == 0 ) return false;
+      return fieldValue !== ''; },
     function( field ) { return field.getLabel() + ' is required.'; } );
   const defaults = {
     selector: 'form',

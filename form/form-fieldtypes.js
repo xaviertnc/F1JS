@@ -1,5 +1,21 @@
 /* globals VanillaCalendar */
 
+/**
+ * F1JS Form Custom Field Types - 10 Jul 2022
+ * 
+ * Import this file before initializing a F1JS Form. See README file.
+ * Include `customFieldTypes` as a F1JS Form contructor param.
+ * 
+ * PS: VanillaCalendar is an 3rd party lib and not ES6 module friendly.
+ * Hence the GLOBAL status :|
+ * 
+ * @author C. Moller <xavier.tnc@gmail.com>
+ * 
+ * @version 1.1.0 - DEV - 15 Dec 2022
+ *   - Drop the GreaterThan validator for the Duration FieldType
+ *     and use a Required validator with `zeroIsBad` instead.
+ */
+
 
 /* Import required F1JS plugins */
 
@@ -86,8 +102,8 @@ const Duration_FieldType = new FieldType( 'Duration_Field', {
   formatValue: function(min) { return (min >= 60 ? Math.floor(min/60)+'h'+(min%60||'00') : min)+'min'; },
   setDispValue: function(v) { this.input.nextElementSibling.innerText = this.formatValue(v); },
   afterInit: function() { this.input.addEventListener('input', this.onChange.bind(this)); },
-  getValidators: function() { const gtVal = 0; if ( this.getRequired() ) this.validators.push(
-    new FieldValidator( this.form.validatorTypes.GreaterThan, this, [gtVal] ) ); },
+  getValidators: function() { this.validators.push( new FieldValidator( 
+    this.form.validatorTypes.Required, this, { zeroIsBad: 1 } ) ); }, 
   onChange: function(ev) { this.setDispValue(ev.target.value); },
 } );
 

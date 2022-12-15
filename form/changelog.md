@@ -44,3 +44,9 @@
       code lines down!
   - Convert `form-fieldtypes.js` and `form-validatortypes.js`
       to ES6 modules and remove their dependancy in F1.
+
+# 15 Dec 2022 - DEV - Ver 2.1.0
+  - Improve the FieldValidator class. Change from `Array args` to `Object args`!
+  - Improve the built-in `Required validation` to accept a 'zeroIsBad' option.
+  - Drop the GreaterThan validator in Duration Fields and use the newly
+    improved Required validator with `zeroIsBad` instead.
