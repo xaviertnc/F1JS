@@ -3,11 +3,7 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.1.0 - DEV - 15 Dec 2022
- *  - Improve the FieldValidator class. Changed
- *    from `Array args` to `Object args`!
- *  - Improve the built-in `Required validation` 
- *    to accept a 'zeroIsBad' option.
+ * @version 2.1.1 - FIX - 17 Dec 2022
  * 
  */
 

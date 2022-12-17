@@ -50,3 +50,7 @@
   - Improve the built-in `Required validation` to accept a 'zeroIsBad' option.
   - Drop the GreaterThan validator in Duration Fields and use the newly
     improved Required validator with `zeroIsBad` instead.
+
+# 17 Dec 2022 - FIX - Ver 2.1.1
+  - Fix the `Time Custom FieldType`. Update getValue() method to not allow incomplete values.
+    I.e. only hours or only minutes. This ensures that "Required" validations work correctly.

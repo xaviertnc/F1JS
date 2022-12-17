@@ -86,13 +86,27 @@ const Calendar_FieldType = new FieldType( 'Calendar_Field', {
     elInput.type = 'hidden'; elInput.name = this.input.name; this.input.name =  '_' + this.input.name;
     this.hidden_input = elInput; this.elm.appendChild(elInput);
     // console.log('Calendar::afterInit(), input.val =', this.input.value );
-    if (this.input.value) this.setValue( this.input.value );
+    if ( this.input.value ) this.setValue( this.input.value );
     // console.log('Calendar::afterInit(), input.val.after =', this.input.value );
     this.controller.name = 'calCtrl_' + ( elInput.name || nextCID++ ); 
     this.controller.click(); 
   },
 } );
 
+const Time_FieldType = new FieldType( 'Time_Field', {
+  inputSelector: 'select',
+  getValue: function() { 
+    console.log('Time_FieldType::getValue()', this );
+    const hour = this.inputs[0].value; if ( hour === '' ) return '';
+    const min = this.inputs[1].value; if ( min === '' ) return '';
+    return hour + ':' + min; },
+  setValue: function(v) { 
+    console.log('Time_FieldType::setValue(), value =', v, this );
+    if ( ! v ) { this.inputs[0].value = ''; 
+    this.inputs[1].value = ''; return; } const parts = v.split( ':' );
+    if ( parts[0] ) { this.inputs[0].value = ( parts[0].length < 2 ? '0' : '' ) + parts[0]; }
+    if ( parts[1] ) { this.inputs[1].value = ( parts[1].length < 2 ? '0' : '' ) + parts[1]; } }   
+} );
 
 const Duration_FieldType = new FieldType( 'Duration_Field', {
   inputSelector: 'input',
@@ -105,19 +119,6 @@ const Duration_FieldType = new FieldType( 'Duration_Field', {
   getValidators: function() { this.validators.push( new FieldValidator( 
     this.form.validatorTypes.Required, this, { zeroIsBad: 1 } ) ); }, 
   onChange: function(ev) { this.setDispValue(ev.target.value); },
-} );
-
-
-const Time_FieldType = new FieldType( 'Time_Field', {
-  inputSelector: 'select',
-  getValue: function() { let val = this.inputs[0].value; if ( val === '' ) return val;
-    if (this.inputs[1].value) val = val + ':' + this.inputs[1].value; return val; },
-  setValue: function(v) { 
-    console.log('Time_FieldType::setValue(), value =', v, this );
-    if ( ! v ) { this.inputs[0].value = ''; 
-    this.inputs[1].value = ''; return; } const parts = v.split( ':' );
-    if ( parts[0] ) { this.inputs[0].value = ( parts[0].length < 2 ? '0' : '' ) + parts[0]; }
-    if ( parts[1] ) { this.inputs[1].value = ( parts[1].length < 2 ? '0' : '' ) + parts[1]; } }   
 } );
 
 
