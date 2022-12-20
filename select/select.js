@@ -3,28 +3,23 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.0.0 - REL - 26 Nov 2022
- *   - Convert to ES6 module
+ * @version 2.1.0 - FT - 20 Dec 2022
  *
  */
 
-const S_PREFIX = 'select';
-const S_LOCALES = { en: { SEARCH: 'Search...', NO_RESULT: '- no result -', PLACEHOLDER_SINGLE: '- Select -', PLACEHOLDER_MULTI: '- Select one or more -' } };
-const S_FONTSIZE = parseInt(window.getComputedStyle(document.body, null).getPropertyValue('font-size'));
-
 export class Select {
-  constructor(old) { 
-    this.dom = { old };
+  constructor(elm, options = {}) {
+    this.elSelect = elm;
     this.type = 'Select_Controller';
-    this.name = this.name || old.name || (+new Date()).toString();
-    this.hasSearch = old.dataset.search;
-    this.multiple = old.dataset.multiple;
-    this.placeholder = old.dataset.placeholder;
-    if (!this.placeholder) this.placeholder = this.multiple ? this.locale.PLACEHOLDER_MULTI : this.locale.PLACEHOLDER_SINGLE;
-    this.locale = S_LOCALES[old.dataset.locale];
-    this.initialValue = old.dataset.value;
-    this.id = `${S_PREFIX}-${this.name}`;
-    this.disabled = old.disabled;
+    this.prefix = elm.dataset.prefix || 'select';
+    this.multiple = elm.dataset.multiple === 'true';
+    this.name = this.name || elm.name || (+new Date()).toString();
+    this.locale = options.locale || { SEARCH: 'Search...', NO_RESULT: '- no result -', PLACEHOLDER_SINGLE: '- Select -', PLACEHOLDER_MULTI: '- Select one or more -' };
+    this.placeholder = elm.dataset.placeholder || (this.multiple ? this.locale.PLACEHOLDER_MULTI : this.locale.PLACEHOLDER_SINGLE);
+    this.id = `${this.prefix}-${this.name}`;
+    this.initialValue = elm.dataset.value;
+    this.hasSearch = elm.dataset.search;
+    this.disabled = elm.disabled;
   }
   focusOption(curr) {
     this.curr = curr;
@@ -53,7 +48,7 @@ export class Select {
     this.dom.el.classList.remove('open');
     this.dom.display.removeAttribute('aria-activedescendant');
     this.dom.display.setAttribute('aria-expanded', false);
-    this.dom.list.querySelectorAll(`.${S_PREFIX}--option`).forEach(o => o.classList.remove('focus'));    
+    this.dom.list.querySelectorAll(`.${this.prefix}--option`).forEach(o => o.classList.remove('focus'));    
   }
   toggle() { if (this.isOpen) this.close(); else if (!this.disabled) this.open(); }
   isSelected(key) { return this.options.find(o => o.key == key).selected; }
@@ -85,12 +80,12 @@ export class Select {
   }
   getOptions() {
     const opts = []; let i = 0;
-    this.dom.old.querySelectorAll(':scope > optgroup').forEach(og => {
+    this.elSelect.querySelectorAll(':scope > optgroup').forEach(og => {
       og.querySelectorAll(':scope > option').forEach(op => { i++;
         opts.push({ key: i, title: op.title || op.innerText, value: op.value, img: op.dataset.img || '',
           desc: op.dataset.desc || '', group: og.label, selected: op.getAttribute('selected'), 
           disabled: op.disabled }); }); });
-    this.dom.old.querySelectorAll(':scope > option').forEach(op => { i++;
+    this.elSelect.querySelectorAll(':scope > option').forEach(op => { i++;
       opts.push({ key: i, title: op.title || op.innerText, value: op.value, img: op.dataset.img 
         || '', desc: op.dataset.desc || '', selected: op.getAttribute('selected'), 
         disabled: op.disabled }); }); return opts;
@@ -99,15 +94,15 @@ export class Select {
     const mkElm = this.mkElm, item = mkElm('li'), body = mkElm('div'), title = mkElm('span');
     item.setAttribute('role', 'option');
     item.id = `${this.dom.el.id}--${op.key}`;
-    item.classList.add(`${S_PREFIX}--option`);
-    body.classList.add(`${S_PREFIX}--option__body`);
+    item.classList.add(`${this.prefix}--option`);
+    body.classList.add(`${this.prefix}--option__body`);
     title.innerHTML = op.title;
     body.appendChild(title);
     if (op.img) {
       const img = mkElm('img');
       img.src = op.img; img.alt = op.title;
       if (op.desc) img.style.marginTop = '.3rem';
-      img.classList.add(`${S_PREFIX}--option__img`);
+      img.classList.add(`${this.prefix}--option__img`);
       item.insertBefore(img, item.firstChild); }
     if (op.desc) {
       const desc = mkElm('small');
@@ -118,7 +113,7 @@ export class Select {
     if (!op.disabled) {
       item.onclick = () => this.toggleAndClose(op.key);
       item.onmouseenter = () => { if (this.keyEvent) { return this.keyEvent = false; }
-        const options = this.dom.list.querySelectorAll(`.${S_PREFIX}--option`);
+        const options = this.dom.list.querySelectorAll(`.${this.prefix}--option`);
         options.forEach(t => t.classList.remove('focus'));
         item.classList.add('focus'); this.curr = op;
         if (op.id && this.hasSearch) this.dom.search.setAttribute('aria-activedescendant', op.id);
@@ -133,7 +128,7 @@ export class Select {
     const groups = [...new Set(options.map((op) => op.group).filter((gr) => !!gr))];
     groups.forEach((gr) => {
       const grItem = this.mkElm('li');
-      grItem.classList.add(`${S_PREFIX}__group`);
+      grItem.classList.add(`${this.prefix}__group`);
       grItem.setAttribute('aria-label', gr);
       grItem.setAttribute('role', 'none');
       grItem.innerHTML = gr;
@@ -147,7 +142,7 @@ export class Select {
   printDisplay(selected) {
     selected = selected || this.options.filter((op) => op.selected);
     if (selected.length) this.dom.display.innerHTML = '<span>' + selected.map((op) => op.title).join('</span>,<span>') + '</span>';
-    else this.dom.display.innerHTML = `<span class="${S_PREFIX}__placeholder">${this.placeholder}</span>`;
+    else this.dom.display.innerHTML = `<span class="${this.prefix}__placeholder">${this.placeholder}</span>`;
   }
   toggleAndClose(key) {
     if (key) this.toggleSelect(key);
@@ -173,40 +168,38 @@ export class Select {
      || op.desc.toLowerCase().includes(key));
     if (!this.shown.length) {
       const item = this.mkElm('li');
-      item.classList.add(`${S_PREFIX}__noresult`);
+      item.classList.add(`${this.prefix}__noresult`);
       item.setAttribute('aria-live', 'polite');
       item.innerHTML = this.locale.NO_RESULT;
       this.dom.list.innerHTML = '';
       this.dom.list.appendChild(item);
     } else this.printOptions(this.shown);
   }
-  setValue(csvStr) {
-    // console.log('setValue = ', csvStr, this);
-    const selected = csvStr !== undefined ? this.selectOptions(csvStr) : this.options.filter(op => op.selected);
-    this.printDisplay(selected); this.dom.hidden.value = selected.map(op => op.value).join(',');
-    this.printOptions(this.options); this.dom.hidden.dispatchEvent(this.onChangeEvent);
+  setValue(csvStr) { // console.log('setValue(), csvStr:', csvStr, this);
+    const oldValue = this.dom.hidden.value, selected = csvStr !== undefined ? this.selectOptions(csvStr) : this.options.filter(op => op.selected),
+    newValue = this.dom.hidden.value = selected.map(op => op.value).join(','); this.printDisplay(selected); this.printOptions(this.options);
+    if ( newValue !== oldValue ) return this.onchange({ oldValue, newValue, selected });
   }
   init() {
-    const mkElm = this.mkElm, old = this.dom.old,
-    el = mkElm('div'), hidden = mkElm('input'), display = mkElm('button'), 
-    menu = mkElm('div'), search = mkElm('input'), list = mkElm('ul'); 
-    this.onChangeEvent = new CustomEvent(`${S_PREFIX}-change`);
-    this.dom = { el, hidden, display, menu, search, list, old };   
+    this.fontSize = window.DOC_FONTSIZE || (window.DOC_FONTSIZE = this.getFontSize());
+    const mkElm = this.mkElm, el = mkElm('div'), hidden = mkElm('input'), display = mkElm('button'), 
+    menu = mkElm('div'), search = mkElm('input'), list = mkElm('ul');
+    this.dom = { el, hidden, display, menu, search, list };   
     if (this.hasSearch) menu.appendChild(search);
     menu.appendChild(list);
     el.id = this.id;
     el.appendChild(hidden);
     el.appendChild(display);
     el.appendChild(menu);    
-    el.classList.add(`${S_PREFIX}`);
+    el.classList.add(`${this.prefix}`);
     if (el.offsetTop >= 0.5 * window.innerHeight) el.classList.add('reverse');
-    hidden.MODEL = this;
+    this.elSelect.MODEL = hidden.MODEL = this;
     hidden.tabIndex = -1;
     hidden.readOnly = true;
     hidden.name = this.name;
     hidden.disabled = this.disabled;
     hidden.setAttribute('aria-hidden', true);
-    hidden.classList.add(`${S_PREFIX}__hidden`);
+    hidden.classList.add(`${this.prefix}__hidden`);
     display.type = 'button';
     display.setAttribute('role', 'combobox');
     display.setAttribute('aria-multiselectable', this.multiple);
@@ -214,12 +207,12 @@ export class Select {
     display.setAttribute('aria-disabled', this.disabled);
     display.setAttribute('aria-expanded', this.isOpen);
     display.setAttribute('aria-owns', `${el.id}_list`);
-    display.classList.add(`${S_PREFIX}__display`);
+    display.classList.add(`${this.prefix}__display`);
     display.onclick = () => this.toggle();
     menu.id = `${el.id}_menu`;
-    menu.classList.add(`${S_PREFIX}__menu`);
+    menu.classList.add(`${this.prefix}__menu`);
     if (this.hasSearch) {
-      search.classList.add(`${S_PREFIX}__search`);
+      search.classList.add(`${this.prefix}__search`);
       search.setAttribute('role', 'searchbox');
       search.setAttribute('aria-label', this.locale.SEARCH);
       search.setAttribute('aria-autocomplete', 'list');
@@ -235,14 +228,15 @@ export class Select {
     list.setAttribute('role', 'listbox');
     list.setAttribute('aria-label', this.name);
     list.setAttribute('aria-expanded', this.isOpen);
-    list.classList.add(`${S_PREFIX}__list`);
+    list.classList.add(`${this.prefix}__list`);
     this.shown = this.options = this.getOptions();
     this.setValue(this.initialValue);
-    old.style.display = 'none'; old.name = '_' + old.name;
-    old.parentElement.insertBefore(el, old);
+    this.elSelect.style.display = 'none'; this.elSelect.name = '_' + this.elSelect.name;
+    this.elSelect.parentElement.insertBefore(el, this.elSelect);
     this.bindEvents();
-    window.dispatchEvent(new CustomEvent(`${S_PREFIX}-create`));
   }
-  rem2px(rem) { return rem * S_FONTSIZE; }
+  onchange(detail) { return this.elSelect.dispatchEvent(new CustomEvent('change', { detail })); }
+  getFontSize() { return parseInt(window.getComputedStyle(document.body, null).getPropertyValue('font-size')); }
+  rem2px(rem) { return rem * this.fontSize; }
   mkElm(tag) { return document.createElement(tag); }
 }
