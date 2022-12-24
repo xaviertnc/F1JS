@@ -24,3 +24,6 @@
  - Add getFontSize() method.
  - Update README.md
 
+## 24 Dec 2022 - DEV - Ver 2.2.0
+ - Set `Select` as ES6 default export 
+

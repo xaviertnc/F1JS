@@ -3,11 +3,11 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.1.0 - FT - 20 Dec 2022
+ * @version 2.2.0 - DEV - 24 Dec 2022
  *
  */
 
-export class Select {
+export default class Select {
   constructor(elm, options = {}) {
     this.elSelect = elm;
     this.type = 'Select_Controller';
