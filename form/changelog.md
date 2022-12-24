@@ -17,7 +17,7 @@
   - Add clearErrors() to init().
   - Remove `Form.Controllers`
 
-# 24 Nov 2022 - FT - Ver 1.3.0
+## 24 Nov 2022 - FT - Ver 1.3.0
   - Add `onlyShowGlobalErrors` option.
   - Add `Form.addGlobalError()` method.
   - Add `name` property to `Calendar Field Controller`
@@ -28,13 +28,13 @@
   - Update `Form.showErrors()` to reflect the new GLOBAL ERRORS feature.
   - Add `Form.errors` to allow showing GLOBAL errors not linked to a specific field.
 
-# 26 Nov 2022 - REL - Ver 2.0.0
+## 26 Nov 2022 - REL - Ver 2.0.0
   - Convert to ES6 module
   - Remove F1 global dependancy
   - Remove prettier.js (not relevant anymore)
   - Fix white space issues.
 
-# 27 Nov 2022 - FIX - Ver 2.0.1
+## 27 Nov 2022 - FIX - Ver 2.0.1
   - Fix ES6 module conversion issues
   - Detach sub-classes from the main class
   - Rename Error to FormError to prevent name clashes
@@ -45,13 +45,13 @@
   - Convert `form-fieldtypes.js` and `form-validatortypes.js`
       to ES6 modules and remove their dependancy in F1.
 
-# 15 Dec 2022 - DEV - Ver 2.1.0
+## 15 Dec 2022 - DEV - Ver 2.1.0
   - Improve the FieldValidator class. Change from `Array args` to `Object args`!
   - Improve the built-in `Required validation` to accept a 'zeroIsBad' option.
   - Drop the GreaterThan validator in Duration Fields and use the newly
     improved Required validator with `zeroIsBad` instead.
 
-# 17 Dec 2022 - FIX - Ver 2.1.1
+## 17 Dec 2022 - FIX - Ver 2.1.1
   - Fix the `Time Custom FieldType`. Update getValue() method to not allow incomplete values.
     I.e. only hours or only minutes. This ensures that "Required" validations work correctly.
 
