@@ -6,8 +6,8 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.1.0 - DEV - 15 Dec 2022
- *   - Change the `args` param from an Array to an Object.
+ * @version 1.2.0 - DEV - 24 Dec 2022
+ *   - Set export default
  */
 
 import { ValidatorType } from './form.js';
@@ -16,13 +16,15 @@ import { ValidatorType } from './form.js';
 
 /* ValidatorType:: function( name, test, getInvalidMessage ) */
 
-const GreaterThan_Validator = new ValidatorType(
+export const GreaterThan_Validator = new ValidatorType(
   'GreaterThan_Validator',
   function( field, args ) { return field.getValue() > args.value; },
   function( field, args ) { return field.getLabel() + ' must be greater than ' + args.value + '.'; }
 );
 
 
-export const customValidatorTypes = {
+const customValidatorTypes = {
   GreaterThan: GreaterThan_Validator,
 };
+
+export default customValidatorTypes;

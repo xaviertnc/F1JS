@@ -11,17 +11,16 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.1.0 - DEV - 15 Dec 2022
- *   - Drop the GreaterThan validator for the Duration FieldType
- *     and use a Required validator with `zeroIsBad` instead.
+ * @version 1.2.0 - DEV - 24 Dec 2022
+ *   - Set export default
  */
 
 
 /* Import required F1JS plugins */
 
 import { FieldType, FieldValidator } from './form.js';
-import { DateTime } from '../datetime/datetime.js';
-import { Select } from '../select/select.js';
+import DateTime from '../datetime/datetime.js';
+import Select from '../select/select.js';
 
 
 let nextCID = 1;
@@ -30,7 +29,7 @@ let nextCID = 1;
 const DT = new DateTime();
 
 
-const Select_FieldType = new FieldType( 'Select_Field', {
+export const Select_FieldType = new FieldType( 'Select_Field', {
   inputSelector: '.select__hidden',
   getName: function() { return this.input.name; },
   setValue: function(v) { this.input.MODEL.setValue(v); },
@@ -42,7 +41,7 @@ const Select_FieldType = new FieldType( 'Select_Field', {
 } );
 
 
-const FullName_FieldType = new FieldType( 'FullName_Field', {
+export const FullName_FieldType = new FieldType( 'FullName_Field', {
   inputSelector: 'input',
   getName: function() { return this.elm.id || 'fullname'; },
   getValue: function() { let val = this.inputs[0].value; if ( val === '' ) return val;
@@ -55,7 +54,7 @@ const FullName_FieldType = new FieldType( 'FullName_Field', {
 } )
 
 
-const Calendar_FieldType = new FieldType( 'Calendar_Field', {
+export const Calendar_FieldType = new FieldType( 'Calendar_Field', {
   inputSelector: 'input',
   parseDispValue: function( dispValue ) { return DT.formatYmd( DT.parseLong( dispValue ) ); },
   printDispValue: function(v) { return DT.formatLong( DT.parseYmd(v) ); },
@@ -93,7 +92,7 @@ const Calendar_FieldType = new FieldType( 'Calendar_Field', {
   },
 } );
 
-const Time_FieldType = new FieldType( 'Time_Field', {
+export const Time_FieldType = new FieldType( 'Time_Field', {
   inputSelector: 'select',
   getValue: function() { 
     console.log('Time_FieldType::getValue()', this );
@@ -108,7 +107,7 @@ const Time_FieldType = new FieldType( 'Time_Field', {
     if ( parts[1] ) { this.inputs[1].value = ( parts[1].length < 2 ? '0' : '' ) + parts[1]; } }   
 } );
 
-const Duration_FieldType = new FieldType( 'Duration_Field', {
+export const Duration_FieldType = new FieldType( 'Duration_Field', {
   inputSelector: 'input',
   setValue: function(v) {
     console.log('Duration_FieldType::setValue(), value =', v, this );
@@ -122,10 +121,12 @@ const Duration_FieldType = new FieldType( 'Duration_Field', {
 } );
 
 
-export const customFieldTypes = {
+const customFieldTypes = {
   Select:   Select_FieldType,
   FullName: FullName_FieldType,
   Calendar: Calendar_FieldType,
   Duration: Duration_FieldType,
   Time:     Time_FieldType
 };
+
+export default customFieldTypes;

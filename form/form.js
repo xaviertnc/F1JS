@@ -3,7 +3,7 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.1.1 - FIX - 17 Dec 2022
+ * @version 2.2.90 - DEV - 24 Dec 2022
  * 
  */
 
@@ -129,7 +129,7 @@ export const Field = function( form, elm )
 };
 
 
-export const Form = function( options, fieldTypes, validatorTypes )
+const Form = function( options, fieldTypes, validatorTypes )
 {
   const vtRequired = new ValidatorType( 'Required_Validator',
     function( field, args /*, options */ ) {
@@ -214,3 +214,5 @@ Form.prototype = {
   },  
 
 };
+
+export default Form;

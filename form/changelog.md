@@ -54,3 +54,11 @@
 # 17 Dec 2022 - FIX - Ver 2.1.1
   - Fix the `Time Custom FieldType`. Update getValue() method to not allow incomplete values.
     I.e. only hours or only minutes. This ensures that "Required" validations work correctly.
+
+## 24 Dec 2022 - DEV - Ver 2.2.0
+ - Set `Form` as the ES6 default export in `form.js`
+ - Set `customFieldTypes` as the ES6 default export in `form-fieldtypes.js`
+ - Set `customValidatorTypes` as the ES6 default export in `form-validatortypes.js`
+ - Fix imports to use `module default` export/import syntax.
+ - Also add `export` to individually exportable objects.
+ - Update README.md
