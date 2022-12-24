@@ -3,12 +3,12 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 3.0.0 - REL - 27 Nov 2022
- *   - Convert from static object to ES6 class!
+ * @version 3.1.0 - DEV - 24 Dec 2022
+ *   - Set `DateTime` as the ES6 default export 
  *
  */
 
-export class DateTime {  
+export default class DateTime {  
 
   constructor( days, months )
   {

@@ -13,5 +13,8 @@
   - Rename from Date to DateTime!
   - Convert to ES6 module
 
-## 27 Nov 2022 - REL - Ver 3.00
+## 27 Nov 2022 - REL - Ver 3.0.0
   - Convert from static object to ES6 Class!
+
+## 24 Dec 2022 - DEV - Ver 3.1.0
+ - Set `DateTime` as the ES6 default export   
