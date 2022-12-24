@@ -3,9 +3,9 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 3.0.0 - REL - 26 Nov 2022
- *   - Convert to ES6 module
- *   - Remove F1 global dependancy
+ * @version 3.1.0 - DEV - 24 Dec 2022
+ *   - Convert to ES6 Class
+ *   - Set `Modal` as ES6 default export
  * 
  */
 
@@ -14,55 +14,54 @@ function extend( obj, props ) {
   for ( let key in props || {} ) { obj[ key ] = props[ key ]; } }
 
 
-export const Modal = function( options )
-{
-  const defaults = {
-    selector: '.modal',
-    formController: null,
-    resetFormOnShow: 0,
-    clearFormOnShow: 0,
-    focusFormOnShow: 0,
-    draggable: 1,
-  };
-  extend ( this, defaults );
-  extend( this, options );
-  this.elm = options.elm || document.querySelector( this.selector );
-  this.elm.addEventListener( 'click', this.onClick );
-  this.elm.MODAL = this;
-  this.ENTITY = null;
-  this.elClose = this.elm.querySelector( '.modal-close' );
-  if ( this.elClose ) this.elClose.addEventListener( 'click', this.onCloseClick );
-  this.elModalInner = this.elm.querySelector( '.modal-inner' );
-  this.elHeader = this.elm.querySelector( 'header' );
-  this.elBody = this.elm.querySelector( '.modal-body' );
-  if ( this.draggable ) this.makeDraggable();
-  // Do more custom stuff with options.afterInit()...
-  if ( this.afterInit ) return this.afterInit();
-};
+export default class Modal {
 
+  constructor( options )
+  {
+    const defaults = {
+      selector: '.modal',
+      formController: null,
+      resetFormOnShow: 0,
+      clearFormOnShow: 0,
+      focusFormOnShow: 0,
+      draggable: 1,
+    };
+    extend ( this, defaults );
+    extend( this, options );
+    this.elm = options.elm || document.querySelector( this.selector );
+    this.elm.addEventListener( 'click', this.onClick );
+    this.elm.MODAL = this;
+    this.ENTITY = null;
+    this.elClose = this.elm.querySelector( '.modal-close' );
+    if ( this.elClose ) this.elClose.addEventListener( 'click', this.onCloseClick );
+    this.elModalInner = this.elm.querySelector( '.modal-inner' );
+    this.elHeader = this.elm.querySelector( 'header' );
+    this.elBody = this.elm.querySelector( '.modal-body' );
+    if ( this.draggable ) this.makeDraggable();
+    // Do more custom stuff with options.afterInit()...
+    if ( this.afterInit ) return this.afterInit();
+  }
 
-Modal.prototype = {
-
-  onClick: function( event ) { 
+  onClick( event ) { 
     if ( event.target.classList.contains( 'modal' ) ) event.target.MODAL.close();
-  },
+  }
 
-  onCloseClick: function ( event )
+  onCloseClick( event )
   {
     if ( event ) event.preventDefault();  
     const elModal = event.target.closest('.modal');
     elModal.MODAL.close();
-  },
+  }
 
-  close: function()
+  close()
   {
     console.log( 'Modal::close()' );
     document.documentElement.classList.remove( 'has-modal' );
     this.elm.classList.remove( 'open' );
     this.ENTITY = null;
-  },
+  }
 
-  show: function( options )
+  show( options )
   {
     console.log( 'Modal::show(), options:', options, this );
     options = options || {};
@@ -79,9 +78,9 @@ Modal.prototype = {
       if ( this.focusFormOnShow ) this.formController.focus();
     }
     this.ENTITY = options.data;
-  },
+  }
 
-  makeDraggable: function()
+  makeDraggable()
   {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     const elModalInner = this.elModalInner;
@@ -121,4 +120,4 @@ Modal.prototype = {
     this.elHeader.addEventListener( 'mousedown', dragMouseDown );
   }
 
-};
+}
