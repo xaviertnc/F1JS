@@ -24,3 +24,8 @@
 ## 24 Dec 2022 - DEV - Ver 3.1.0
  - Convert to ES6 Class
  - Set `Modal` as ES6 default export
+
+## 29 Dec 2022 - DEV - Ver 4.0.0
+ - Rename `elModal.MODAL` to `elModal.CONTROL`
+ - Add afterInit() event handler option.
+ - Update README.md

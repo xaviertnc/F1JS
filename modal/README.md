@@ -22,7 +22,7 @@
  - elModalInner
  - elHeader
  - elClose
- - elm.MODAL
+ - elm.CONTROL
  - ENTITY
 
 

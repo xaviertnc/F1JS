@@ -62,3 +62,11 @@
  - Fix imports to use `module default` export/import syntax.
  - Also add `export` to individually exportable objects.
  - Update README.md
+
+## 29 Dec 2022 - FT - Ver 3.0.0
+ - Add afterInit()
+ - Change constructor() params.
+ - Totally refactor showErrors()!
+ - Rename addGlobalError() to addFormError().
+ - Add field.elm.MODEL and field.elm.CONTROL etc.
+ - Update README.md

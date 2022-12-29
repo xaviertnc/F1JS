@@ -25,5 +25,11 @@
  - Update README.md
 
 ## 24 Dec 2022 - DEV - Ver 2.2.0
- - Set `Select` as ES6 default export 
+ - Set `Select` as ES6 default export
+
+## 29 Dec 2022 - FT - Ver 3.0.0
+ - Rename DOC_FONTSIZE to S_FONTSIZE
+ - Rename `elSelect.MODEL` to `elSelect.S_CONTROL`
+ - Add support for `onchange="F1.onSelectChanged(event)"` style event handler definition!
+
 

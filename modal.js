@@ -3,10 +3,9 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 3.1.0 - DEV - 24 Dec 2022
- *   - Convert to ES6 Class
- *   - Set `Modal` as ES6 default export
- * 
+ * @version 4.0.0 - FT - 29 Dec 2022
+ *   - Rename `elModal.MODAL` to `elModal.CONTROL`
+ *   - Add afterInit()
  */
 
 
@@ -30,7 +29,7 @@ export default class Modal {
     extend( this, options );
     this.elm = options.elm || document.querySelector( this.selector );
     this.elm.addEventListener( 'click', this.onClick );
-    this.elm.MODAL = this;
+    this.elm.CONTROL = this;
     this.ENTITY = null;
     this.elClose = this.elm.querySelector( '.modal-close' );
     if ( this.elClose ) this.elClose.addEventListener( 'click', this.onCloseClick );
@@ -43,14 +42,14 @@ export default class Modal {
   }
 
   onClick( event ) { 
-    if ( event.target.classList.contains( 'modal' ) ) event.target.MODAL.close();
+    if ( event.target.classList.contains( 'modal' ) ) event.target.CONTROL.close();
   }
 
   onCloseClick( event )
   {
     if ( event ) event.preventDefault();  
     const elModal = event.target.closest('.modal');
-    elModal.MODAL.close();
+    elModal.CONTROL.close();
   }
 
   close()

@@ -6,8 +6,8 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.2.0 - DEV - 24 Dec 2022
- *   - Set export default
+ * @version 1.3.0 - DEV - 29 Dec 2022
+ *   - Change ValidatorType import path
  */
 
 import { ValidatorType } from './form.js';

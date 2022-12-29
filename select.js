@@ -3,7 +3,7 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.2.0 - DEV - 24 Dec 2022
+ * @version 3.0.0 - FT - 29 Dec 2022
  *
  */
 
@@ -181,7 +181,7 @@ export default class Select {
     if ( newValue !== oldValue ) return this.onchange({ oldValue, newValue, selected });
   }
   init() {
-    this.fontSize = window.DOC_FONTSIZE || (window.DOC_FONTSIZE = this.getFontSize());
+    this.fontSize = window.S_FONTSIZE || (window.S_FONTSIZE = this.getFontSize());
     const mkElm = this.mkElm, el = mkElm('div'), hidden = mkElm('input'), display = mkElm('button'), 
     menu = mkElm('div'), search = mkElm('input'), list = mkElm('ul');
     this.dom = { el, hidden, display, menu, search, list };   
@@ -193,7 +193,7 @@ export default class Select {
     el.appendChild(menu);    
     el.classList.add(`${this.prefix}`);
     if (el.offsetTop >= 0.5 * window.innerHeight) el.classList.add('reverse');
-    this.elSelect.MODEL = hidden.MODEL = this;
+    this.elSelect.S_CONTROL = hidden.S_CONTROL = this;
     hidden.tabIndex = -1;
     hidden.readOnly = true;
     hidden.name = this.name;

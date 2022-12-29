@@ -40,7 +40,7 @@ window.LOCALES = {
 
 ...
 
-import { Select } from './js/vendors/f1js/select/select.js';
+import { Select } from './js/vendors/f1js/select.js';
 
 ...
 

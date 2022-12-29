@@ -3,7 +3,7 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 2.2.0 - DEV - 24 Dec 2022
+ * @version 3.0.0 - FT - 29 Dec 2022
  * 
  */
 
@@ -86,10 +86,10 @@ FieldType.prototype = {
   reset: function() { this.setValue( this.initialValue || '' ); },
   focus: function() { this.input ? this.input.focus() : null; },
 
-  showErrors: function() {
+  showErrors: function( options ) {
     if ( !this.errors.length ) return;
     this.elm.classList.add( this.unhappyClass );
-    if ( this.form.onlyShowSummary || this.form.onlyShowGlobalErrors ) return;
+    if ( options && ! options.showErrorText ) return;
     const elMsgs = document.createElement( 'div' );
     elMsgs.innerHTML = this.errors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
     elMsgs.className = this.errorsClass;
@@ -123,13 +123,14 @@ export const Field = function( form, elm )
   const fieldTypeId = elm.getAttribute( 'data-type' );
   const fieldType = form.fieldTypes[ fieldTypeId ];
   extend( this, fieldType || new FieldType( 'Text' ) );
+  this.elm.MODEL = this;
   if (this.beforeInit) this.beforeInit();
   this.getInputs(); this.input = this.inputs[0]; this.getValidators();
   if (this.afterInit) this.afterInit();
 };
 
 
-const Form = function( options, fieldTypes, validatorTypes )
+const Form = function( options )
 {
   const vtRequired = new ValidatorType( 'Required_Validator',
     function( field, args /*, options */ ) {
@@ -144,17 +145,15 @@ const Form = function( options, fieldTypes, validatorTypes )
     summaryClass: 'summary',
     unhappyClass: 'unhappy',
     errorsClass: 'errors',
-    validatorTypes: { Required: vtRequired },
+    validatorTypes: {},
     fieldTypes: {},
     errors: [],
     fields: []
   };
-  extend( this, defaults );
-  extend( this, options );
-  if ( fieldTypes ) extend( this.fieldTypes, fieldTypes );
-  if ( validatorTypes ) extend( this.validatorTypes, validatorTypes );
+  extend( defaults, options ); extend( this, defaults );
+  this.validatorTypes.Required = this.validatorTypes.Required || vtRequired;
   this.elm = options.elm || document.querySelector( this.selector );
-  this.getFields();
+  this.getFields(); this.elm.CONTROL = this;
   this.init( this.initialValues );
 };
 
@@ -163,8 +162,14 @@ Form.prototype = {
   addField: function( elm ) {
     this.fields.push( new Field( this, elm ) ); },
 
-  addGlobalError: function( errorMessage ) {
+  addFormError: function( errorMessage ) {
     this.errors.push( new FormError( this, errorMessage ) ); },
+  
+  renderErrorSummary: function( form, allErrors ) {
+    return allErrors.map( e => '<div class="error">'+(e.message||e)+'</div>' ).join(''); },
+
+  mountErrorSummary: function( form, elSummary ) {
+    form.elm.prepend( elSummary ); },
 
   getFields: function() {
     const elements = this.elm.querySelectorAll( this.fieldSelector );
@@ -177,21 +182,24 @@ Form.prototype = {
     return errors;
   },
 
-  showErrors: function() {
-    const fieldErrors = [];
-    this.elm.classList.add( this.unhappyClass );
-    const showFieldErrorText = ! this.onlyShowGlobalErrors;
-    this.fields.forEach( field => { field.showErrors(); 
-      if ( showFieldErrorText && field.errors[0] ) fieldErrors.push( field.errors[0] ); } );
-    const elMsgs = document.createElement( 'div' );
-    const allErrors = [].concat( fieldErrors, this.errors );
-    elMsgs.className = this.errorsClass + ' ' + this.summaryClass;
-    elMsgs.innerHTML = allErrors.map( e => '<div class="error">'+e.message+'</div>' ).join('');
-    this.elm.insertBefore( elMsgs, this.elm.firstElementChild );
+  showErrors: function( options ) {
+    options = options || {}; this.elm.classList.add( this.unhappyClass );
+    const fieldErrors = [], showSummary = options.showErrorSummary ?? this.showErrorSummary; 
+    this.fields.forEach( field => { field.showErrors({ showErrorText: ! showSummary }); 
+      if ( field.errors[0] ) fieldErrors.push( field.errors[0] ); } );
+    if ( ! showSummary && this.errors.length === 0 ) return fieldErrors;
+    const elSummary = this.elSummary = document.createElement( 'div' );
+    elSummary.className = this.errorsClass + ' ' + this.summaryClass;
+    const formErrors = [].concat( options.formErrors || [], this.errors ); 
+    const allErrors = showSummary ? formErrors.concat( fieldErrors ) : formErrors;
+    const render = options.renderErrorSummary || this.renderErrorSummary;
+    const mount = options.mountErrorSummary || this.mountErrorSummary
+    elSummary.innerHTML = render( this, allErrors, formErrors, fieldErrors );
+    mount( this, elSummary );
     return fieldErrors;
   },
 
-  clearErrors: function() { clearErrors( this, '.' + this.summaryClass );
+  clearErrors: function() { if ( this.elSummary ) this.elSummary.remove();
     this.fields.forEach( field => field.clearErrors() ); },
 
   validate: function( options ) { let valid = true; this.clearErrors();
@@ -211,6 +219,7 @@ Form.prototype = {
       // console.log('Form:init() fname =', fname, ', fid =', fid);
       f.initialValue = initialValues ? initialValues[ fid ] || '' : f.getValue();
       if ( initialValues ) f.setValue( f.initialValue ); } );
+    if (this.afterInit) this.afterInit();
   },  
 
 };

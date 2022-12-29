@@ -11,16 +11,16 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.2.0 - DEV - 24 Dec 2022
- *   - Set export default
+ * @version 1.3.0 - DEV - 29 Dec 2022
+ *   - Change DateTime and Select import paths.
  */
 
 
 /* Import required F1JS plugins */
 
 import { FieldType, FieldValidator } from './form.js';
-import DateTime from '../datetime/datetime.js';
-import Select from '../select/select.js';
+import DateTime from './datetime.js';
+import Select from './select.js';
 
 
 let nextCID = 1;
@@ -32,8 +32,8 @@ const DT = new DateTime();
 export const Select_FieldType = new FieldType( 'Select_Field', {
   inputSelector: '.select__hidden',
   getName: function() { return this.input.name; },
-  setValue: function(v) { this.input.MODEL.setValue(v); },
-  focus: function() { const elDisplay = this.input.MODEL.dom.display;
+  setValue: function(v) { this.input.S_CONTROL.setValue(v); },
+  focus: function() { const elDisplay = this.input.S_CONTROL.dom.display;
     setTimeout( function() { elDisplay.focus(); } ); },
   beforeInit: function() { const elSelect = this.elm.querySelector('select'),
     ctrl = new Select( elSelect ); ctrl.init(), this.controller = ctrl; },

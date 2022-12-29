@@ -5,8 +5,8 @@
 ### Define FieldTypes
 ```
 import { FieldType, FieldValidator } from './form.js';
-import DateTime from '../datetime/datetime.js';
-import Select from '../select/select.js';
+import DateTime from './datetime.js';
+import Select from './select.js';
 
 let nextCID = 1;
 
@@ -70,19 +70,19 @@ export default customValidatorTypes;
 
 ## Create
 ```
-import Form from './js/vendors/f1js/form/form.js';
+import Form from './js/vendors/f1js/form.js';
 
-import customValidatorTypes from './js/vendors/f1js/form/form-validatortypes.js';
-import customFieldTypes from './js/vendors/f1js/form/form-fieldtypes.js';
+import customValidatorTypes from './js/vendors/f1js/f1-validatortypes.js';
+import customFieldTypes from './js/vendors/f1js/f1-fieldtypes.js';
 
-const options = { onlyShowSummary: true, selector: '#booking-edit-modal form' };
+const options = { showSummary: true, selector: '#booking-edit-modal form' };
 const bookingForm = new Form( options, customFieldTypes, customValidatorTypes );
 ```
 #### Create Options
  - {HTMLElement} elm
  - {String} selector
- - {Boolean} onlyShowSummary,
- - {Boolean} onlyShowGlobalErrors,
+ - {Function} mountSummary,
+ - {Boolean} showSummary,
  - {Object} initialValues
 
 
@@ -97,7 +97,7 @@ F1.onSubmitBooking = function( event ) {
   event.preventDefault();
   if ( ! bookingFormCtrl.validate() )
   {
-    bookingFormCtrl.addGlobalError( 'Some field values are invalid.' );
+    bookingFormCtrl.addFormError( 'Some field values are invalid.' );
     const fieldErrors = bookingFormCtrl.showErrors()
     log( 'onSubmitBooking, fieldErrors:', fieldErrors );
     return fieldErrors.pop().focus();
@@ -105,4 +105,38 @@ F1.onSubmitBooking = function( event ) {
   } 
   saveBooking( elBookingEditModal.ENTITY );
 };
+```
+
+## Show Field Errors
+NB: Don't set `showSummary` = `true` if you want to display field errors on each field instead of in a form summary.
+```
+  const fieldErrors = bookingFormCtrl.showErrors();
+```
+
+## Show Form Errors Summary
+```
+  const formErrors = [ 'Summary Message #1', 'Another Message', ... ];
+  const mountSummary = function( formCtrl, elSummary ) { ... elParent.append( elSummary ) };
+  const renderSummary = function( formCtrl, allErrors, formErrors, fieldErrors ) { ... return HTML };
+  const showErrorOptions = { showSummary: true, formErrors, mountSummary, renderSummary };
+
+  const fieldErrors = bookingFormCtrl.showErrors( showErrorOptions );
+
+```
+-- OR --
+```
+
+const mountErrorSummary = function( formCtrl, elSummary ) { ... };
+const renderErrorSummary = function( formCtrl, allErrors, formErrors, fieldErrors ) { ... };
+const formOptions = { showSummary: true, mountErrorSummary, renderErrorSummary, selector: '#booking-edit-modal form' };
+const bookingForm = new Form( formOptions, customFieldTypes, customValidatorTypes );
+
+...
+
+bookingForm.addFormError( 'Form Summary Message #1' );
+bookingForm.addFormError( 'Form Summary Message #2' );
+
+...
+
+const fieldErrors = bookingFormCtrl.showErrors();
 ```
