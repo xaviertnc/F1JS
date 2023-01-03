@@ -3,9 +3,8 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 4.0.0 - FT - 29 Dec 2022
- *   - Rename `elModal.MODAL` to `elModal.CONTROL`
- *   - Add afterInit()
+ * @version 4.1.0 - FT - 03 Jan 2023
+ * 
  */
 
 
@@ -35,7 +34,9 @@ export default class Modal {
     if ( this.elClose ) this.elClose.addEventListener( 'click', this.onCloseClick );
     this.elModalInner = this.elm.querySelector( '.modal-inner' );
     this.elHeader = this.elm.querySelector( 'header' );
+    this.elTitle = this.elm.querySelector( '.modal-title' );
     this.elBody = this.elm.querySelector( '.modal-body' );
+    this.elFooter = this.elm.querySelector( 'footer' );
     if ( this.draggable ) this.makeDraggable();
     // Do more custom stuff with options.afterInit()...
     if ( this.afterInit ) return this.afterInit();
@@ -65,7 +66,11 @@ export default class Modal {
     console.log( 'Modal::show(), options:', options, this );
     options = options || {};
     if ( options.event ) event.preventDefault();
+    if ( options.header ) this.elHeader.innerHTML = options.header;
+    else if ( options.title ) this.elTitle.innerHTML = this.title = options.title;
     if ( options.body ) this.elBody.innerHTML = options.body;
+    if ( options.footer ) this.elFooter.innerHTML = options.footer;
+    if ( options.afterShow ) options.afterShow( this );
     document.documentElement.classList.add( 'has-modal' );
     this.elm.classList.add( 'open' );
     if ( this.formController )

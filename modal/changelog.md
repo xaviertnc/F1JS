@@ -29,3 +29,7 @@
  - Rename `elModal.MODAL` to `elModal.CONTROL`
  - Add afterInit() event handler option.
  - Update README.md
+
+## 03 Jan 2023 - FT - Ver 4.1.0
+ - Add support for setting the modal `Header`, `Title` and `Footer` in
+   the `constructor` or `onShow`.  
