@@ -32,4 +32,7 @@
  - Rename `elSelect.MODEL` to `elSelect.S_CONTROL`
  - Add support for `onchange="F1.onSelectChanged(event)"` style event handler definition!
 
+## 10 Jan 2023 - FIX - Ver 3.0.1
+ - Fix issue with a global `keypress` event handler blocking ENTER on non-related form elements and menu toggles.
+
 

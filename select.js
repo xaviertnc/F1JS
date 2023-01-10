@@ -3,7 +3,7 @@
  *  
  * @author  C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 3.0.0 - FT - 29 Dec 2022
+ * @version 3.0.1 - FIX - 10 Jan 2023
  *
  */
 
@@ -73,9 +73,8 @@ export default class Select {
         if (inShownPos < (this.shown.length - 1)) this.focusOption(this.shown[inShownPos + 1]); } 
         else if (!this.isOpen && this.dom.el.contains(document.activeElement)) {
           e.preventDefault(); this.keyEvent = true; this.open(); } break;
-      case 'Enter': e.preventDefault(); if (this.dom.el.contains(document.activeElement)) {
-        if (this.isOpen) this.toggleAndClose(this.curr ? this.curr.key : null);
-        else { this.keyEvent = true; this.open(); } } break;
+      case 'Enter': if (this.isOpen && this.dom.el.contains(document.activeElement)) { 
+        e.preventDefault(); this.toggleAndClose(this.curr ? this.curr.key : null); } break;
     } });
   }
   getOptions() {
@@ -181,7 +180,8 @@ export default class Select {
     if ( newValue !== oldValue ) return this.onchange({ oldValue, newValue, selected });
   }
   init() {
-    this.fontSize = window.S_FONTSIZE || (window.S_FONTSIZE = this.getFontSize());
+    window.F1_SELECT = window.F1_SELECT || {};
+    this.fontSize = window.F1_SELECT.fontSize || (window.F1_SELECT.fontSize = this.getFontSize());
     const mkElm = this.mkElm, el = mkElm('div'), hidden = mkElm('input'), display = mkElm('button'), 
     menu = mkElm('div'), search = mkElm('input'), list = mkElm('ul');
     this.dom = { el, hidden, display, menu, search, list };   
