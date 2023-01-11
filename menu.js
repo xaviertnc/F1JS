@@ -3,7 +3,8 @@
  * 
  * @author C. Moller <xavier.tnc@gmail.com>
  * 
- * @version 1.0.0 - INIT - 07 Jan 2023
+ * @version 1.1.0 - FT - 11 Jan 2023
+ *   - Improve setActive() to also handle multi-level menus.
  * 
  */
 
@@ -28,12 +29,17 @@ export default class Menu {
     const menuCtrl = this;
     const activeItemRef = pageRef || 'home';
     this.menuItems = this.elm.querySelectorAll( this.itemSelector );
+    // console.log( 'MenuController::setActive', { activeItemRef, menuItems: this.menuItems } );
     this.menuItems.forEach( function( elItem ) {
       const elLink = elItem.querySelector( menuCtrl.linkSelector );
       const itemRef = elLink?.getAttribute( 'href' );
+      // console.log( 'MenuController::setActive', { activeItemRef, itemRef } );
       if ( itemRef == activeItemRef || ( itemRef === '' && activeItemRef === 'home' ) ) {
         menuCtrl.elm.setAttribute( 'aria-expanded', 'true' );
         elItem.classList.add( menuCtrl.activeClass );
+        if ( elItem.parentElement.classList.contains( 'submenu' ) ) {
+          elItem.parentElement.parentElement.classList.add( menuCtrl.activeClass );
+        }
       }
     });
   }

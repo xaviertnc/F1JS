@@ -5,3 +5,6 @@
  - Set the active menu item based on the current page.
  - Add event handlers for mobile and submenu toggles.
  - Add ARIA labels based on menu name and state.
+
+## 11 Jan 2023 - FT - Ver 1.1.0
+ - Improve setActive() to also handle multi-level menus. 
